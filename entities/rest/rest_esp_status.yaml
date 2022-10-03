@@ -1,0 +1,11 @@
+resource_template: "https://developer.sepush.co.za/business/2.0/status"
+scan_interval: 7200
+headers:
+  Token: !secret eskomsepush
+sensor:
+  name: "ESP Load Shedding Status"
+  unique_id: 99270dbf-7076-4689-9139-022ff08f5412
+  json_attributes_path: "$.status.eskom"
+  value_template: "{{ value_json.status.eskom.stage }}"
+  json_attributes:
+    - next_stages

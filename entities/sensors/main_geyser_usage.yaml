@@ -1,0 +1,5 @@
+platform: integration
+source: sensor.asc_geyser_power
+name: Main Geyser Usage
+unit_prefix: k
+round: 2

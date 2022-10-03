@@ -1,0 +1,12 @@
+#####
+#
+#####
+
+platform: template
+sensors:
+  main_geyser_heating:
+    friendly_name: "Main Geyser Heating"
+    value_template: >-
+      {{ states('sensor.asc_geyser_power')|float > 0 }}
+    device_class: heat
+    unique_id: heat_mgh

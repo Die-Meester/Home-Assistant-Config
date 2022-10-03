@@ -1,0 +1,6 @@
+platform: group
+name: "Bedroom Doors"
+unique_id: bedroom_doors
+entities:
+  - binary_sensor.bedroom_front_door
+  - binary_sensor.bedroom_rear_door

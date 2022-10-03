@@ -1,0 +1,5 @@
+platform: integration
+source: sensor.sonoff_10013218b0_power
+name: Bar DB Usage
+unit_prefix: k
+round: 2

@@ -1,0 +1,16 @@
+binary_sensor:
+  - name: "Kloofendal Loadshedding ESP"
+    unique_id: 29000228-f3fc-4b99-bff1-288968c38b80
+    state: >-
+      {% if ((as_timestamp(state_attr( 'sensor.esp_load_shedding', 'events' )[0]["start"]))) <= as_timestamp(now()) and ((as_timestamp(state_attr( 'sensor.esp_load_shedding', 'events' )[0]["end"])) >= as_timestamp(now())) %}on{% else %}off{% endif %}
+    attributes:
+      startsin: >-
+        {{ (( ( (as_timestamp(state_attr( 'sensor.esp_load_shedding', 'events' )[0]["start"])) ) - ( as_timestamp(now()) ) ) / 60) | round | int }}
+      endsin: >-
+        {{ (( (as_timestamp(state_attr( 'sensor.esp_load_shedding', 'events' )[0]["end"])) - as_timestamp(now()) ) / 60 ) | round | int }}
+      starts: >-
+        {{ as_timestamp(state_attr( 'sensor.esp_load_shedding', 'events' )[0]["start"]) | timestamp_local }}
+      ends: >-
+        {{ as_timestamp(state_attr( 'sensor.esp_load_shedding', 'events' )[0]["end"]) | timestamp_local }}
+    icon: >-
+      {% if ((as_timestamp(state_attr( 'sensor.esp_load_shedding', 'events' )[0]["start"]))) <= as_timestamp(now()) and ((as_timestamp(state_attr( 'sensor.esp_load_shedding', 'events' )[0]["end"])) >= as_timestamp(now())) %}mdi:toggle-switch-variant-off{% else %}mdi:toggle-switch-variant{% endif %}

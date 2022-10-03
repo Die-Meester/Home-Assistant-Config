@@ -1,0 +1,12 @@
+resource_template: "https://developer.sepush.co.za/business/2.0/area?id={{ states( 'input_text.load_shedding_area') }}"
+scan_interval: 3600
+headers:
+  Token: !secret eskomsepush
+sensor:
+  name: "ESP Load Shedding"
+  unique_id: loadshedding_esp
+  # json_attributes_path: "{{ value_json['events'] }}"
+  value_template: "{{ value_json.info.name }}"
+  json_attributes:
+    - info
+    - events

@@ -1,0 +1,8 @@
+platform: rest
+resource: http://192.168.1.14:8989/api/calendar?apikey=9d5f7f1d90c84655a6292294dca4a875
+name: Sonarr Series
+value_template: "{{ value_json | length }}"
+json_attributes_path: "$."
+json_attributes:
+  - seriesId
+  - series

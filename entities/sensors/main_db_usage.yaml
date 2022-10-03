@@ -1,0 +1,5 @@
+platform: integration
+source: sensor.sonoff_10013bbb98_power
+name: Main DB Usage
+unit_prefix: k
+round: 2

@@ -1,0 +1,6 @@
+platform: wake_on_lan
+name: "NAS"
+mac: "00:90:a9:e1:70:fe" # used to turn on the switch with a magic packet
+turn_off:
+  service: shell_command.switch_nas_off # used to turn off the switch
+host: 192.168.1.30 # used to get the state of the NAS in case something outside HA turns it on or off

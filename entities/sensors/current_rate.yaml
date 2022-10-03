@@ -1,0 +1,14 @@
+platform: template
+sensors:
+  current_coj_rate:
+    unique_id: 1c9acc38-a2d9-45e1-b02f-3d6fc40c61db
+    friendly_name: "Current Electricity Rate"
+    value_template: >-
+      {% if states('sensor.total_monthly_energy')|float <= 350 %}
+        2.097255
+      {% elif states('sensor.total_monthly_energy')|float <= 500 %}
+        2.405685
+      {% else %}
+        2.74114
+      {% endif %}
+    unit_of_measurement: ZAR/kWh

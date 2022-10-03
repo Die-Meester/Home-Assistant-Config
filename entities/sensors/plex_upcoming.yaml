@@ -1,0 +1,6 @@
+platform: plex_recently_added
+name: Plex Recently Added
+token: zwcpWVWXkgR28d_fbEaQ
+host: 192.168.1.30
+port: 32400
+max: 10

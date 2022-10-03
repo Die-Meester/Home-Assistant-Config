@@ -1,0 +1,13 @@
+######
+# Wifi Family Switch
+#
+######
+
+
+platform: command_line
+switches:
+  family_wifi:
+    command_on: "/config/shell_scripts/unifi_family.sh enable"
+    command_off: "/config/shell_scripts/unifi_family.sh disable"
+    command_state: "/config/shell_scripts/unifi_family.sh status"
+    friendly_name: Family WiFi

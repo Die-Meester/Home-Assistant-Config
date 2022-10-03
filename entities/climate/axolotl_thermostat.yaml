@@ -1,0 +1,15 @@
+platform: generic_thermostat
+name: Axolotl Tank
+heater: switch.axolotl_fans
+target_sensor: sensor.axolotl_tank_ds18b20_temperature
+min_temp: 10
+max_temp: 30
+ac_mode: true
+target_temp: 18
+cold_tolerance: 1
+hot_tolerance: 1
+min_cycle_duration:
+  seconds: 60
+keep_alive:
+  minutes: 3
+precision: 0.1

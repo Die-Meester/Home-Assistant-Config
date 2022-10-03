@@ -1,0 +1,868 @@
+- id: '1650023017986'
+  alias: Frigate Back Yard Notification
+  description: ''
+  use_blueprint:
+    path: hunterjm/frigate_notification.yaml
+    input:
+      camera: backyard
+      notify_device: 5de724ba17899d151837e1e7822fa464
+      base_url: https://homeassistant.diemeester.com
+      labels:
+      - person
+      presence_filter: person.rudi_o_kelly
+      cooldown: 60
+      silence_timer: 30
+- id: '1650024016617'
+  alias: Frigate Front Yard Notofication
+  description: ''
+  use_blueprint:
+    path: hunterjm/frigate_notification.yaml
+    input:
+      notify_device: 5de724ba17899d151837e1e7822fa464
+      base_url: https://homeassistant.diemeester.com
+      presence_filter: person.rudi_o_kelly
+      cooldown: 60
+      silence_timer: 30
+      labels:
+      - person
+      camera: driveway
+- id: '1650381153974'
+  alias: Notify When Tanya Leave Ouma
+  description: ''
+  use_blueprint:
+    path: homeassistant/notify_leaving_zone.yaml
+    input:
+      person_entity: person.tanya_o_kelly
+      zone_entity: zone.ouma_charmaine
+      notify_device: 5de724ba17899d151837e1e7822fa464
+- id: '1635704484044'
+  alias: Turn Off Fish Tank Light at 23:00
+  description: ''
+  trigger:
+  - platform: time
+    at: '23:00:00'
+  condition: []
+  action:
+  - service: light.turn_off
+    data: {}
+    target:
+      entity_id: light.fish_tanks_lights
+  - service: notify.html_browser
+    data:
+      message: Fish Tank Lights have been turned down.
+  mode: single
+- id: '1650803161063'
+  alias: 'Outside Lights: turn on and off based on elevation'
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sun.sun
+    attribute: elevation
+    below: '-6'
+    id: turn_lights_on
+  - platform: numeric_state
+    entity_id: sun.sun
+    attribute: elevation
+    above: '-6'
+    id: turn_lights_off
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: turn_lights_on
+      sequence:
+      - service: light.turn_on
+        data: {}
+        target:
+          entity_id: light.backyard
+      - service: notify.diemeesterha
+        data:
+          title: Lights
+          message: Lights Turned On
+    - conditions:
+      - condition: trigger
+        id: turn_lights_off
+      sequence:
+      - service: light.turn_off
+        data: {}
+        target:
+          entity_id: light.backyard
+      - service: notify.mobile_app_rudi_oppo
+        data:
+          message: Outside Lights were turned off.
+    default: []
+  mode: single
+- id: '1641927371719'
+  alias: Turn off Kids Computers on school nights
+  description: ''
+  trigger:
+  - platform: time
+    at: input_datetime.computers_off
+  condition:
+  - condition: state
+    entity_id: binary_sensor.schoolnight
+    state: 'on'
+  action:
+  - service: homeassistant.turn_off
+    target:
+      entity_id:
+      - switch.kayden_pc
+    data: {}
+  - service: notify.html_browser
+    data:
+      message: Computers have been shutdown
+  mode: single
+- id: '1650803958450'
+  alias: 'Garage Door: Rudi Garage'
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.remote_1_button_b
+    to: 'on'
+  condition: []
+  action:
+  - service: cover.open_cover
+    data: {}
+    target:
+      entity_id: cover.garage_door
+  - service: light.toggle
+    data: {}
+    target:
+      entity_id: light.garage_light
+  mode: single
+- id: '1650804055342'
+  alias: 'Garage Light: Turn Off after 15 Minutes'
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - light.garage_light
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 30
+      seconds: 0
+  condition: []
+  action:
+  - service: light.turn_off
+    data: {}
+    target:
+      entity_id: light.garage_light
+  mode: single
+- id: 22def37d-7d6e-48c4-937e-cc8b07c7dc3e
+  alias: Toggle Bedroom Lights
+  description: Toggle Bedroom Lights with 2 Ch Switch
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.2ch_switch_1
+    to: 'on'
+  condition: []
+  action:
+  - service: light.toggle
+    data:
+      flash: long
+    target:
+      entity_id:
+      - light.bedroom_lights
+      - light.bedroom
+  mode: single
+- id: '1650804867592'
+  alias: Announce when Tanya Leaves Ouma
+  description: Voice Notification when Tanya Leaves
+  trigger:
+  - platform: zone
+    entity_id: person.tanya_o_kelly
+    zone: zone.ouma_charmaine
+    event: enter
+    id: tanya_arrived_ouma
+  - platform: zone
+    entity_id: person.tanya_o_kelly
+    zone: zone.ouma_charmaine
+    event: leave
+    id: tanya_left_ouma
+  condition:
+  - condition: state
+    entity_id: person.rudi_o_kelly
+    state: home
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: tanya_arrived_ouma
+      sequence:
+      - service: tts.cloud_say
+        data:
+          entity_id: media_player.bedroom_speaker
+          message: Tanya has entered the Ouma Zone
+    - conditions:
+      - condition: trigger
+        id: tanya_left_ouma
+      sequence:
+      - service: tts.cloud_say
+        data:
+          entity_id: media_player.bedroom_speaker
+          message: Tanya has left Ouma, get everything ready!
+    default: []
+  mode: single
+- id: '1650831469675'
+  alias: 'Geyser: Turn on Geyser on Workday'
+  description: ''
+  trigger:
+  - platform: time
+    at: 05:00:00
+  condition:
+  - condition: state
+    entity_id: binary_sensor.workday_sensor
+    state: 'on'
+  action:
+  - service: homeassistant.turn_on
+    data: {}
+    target:
+      entity_id: switch.asc_geyser_switch_1
+  mode: single
+- id: '1650950160995'
+  alias: 'Gate: Rudi Remote'
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.remote_1_button_a
+    to: 'on'
+  condition: []
+  action:
+  - service: cover.open_cover
+    data: {}
+    target:
+      entity_id: cover.gate_motor
+  mode: single
+- id: '1651747419135'
+  alias: Tanya Pressence
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - person.tanya_o_kelly
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  condition:
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: person.rudi_o_kelly
+      state: home
+  - condition: template
+    value_template: '{{ trigger.from_state.state }} != {{ trigger.to_state.state }}'
+  action:
+  - variables:
+      old: '{{ trigger.from_state.state }}'
+      new: '{{ trigger.to_state.state }}'
+      person: '{{ trigger.to_state.name }}'
+  - service: tts.cloud_say
+    data:
+      entity_id: media_player.bedroom_speaker
+      message: "{% if new == \"away\" and old == \"home\"%}\n  {{ person }} left home\n{%
+        elif new == \"home\" %}\n  {{ person }} arrived at home\n{% elif new == \"away\"
+        %}\n  {{ person }} left {{ old }}\n{% else %}\n  {{ person }} arrived at {{
+        new }}\n{% endif %}"
+  mode: single
+- id: '1657208687283'
+  alias: Load Shedding (Warning)
+  description: ''
+  trigger:
+  - platform: template
+    value_template: '{{ timedelta(minutes=(state_attr("binary_sensor.kloofendal_loadshedding_esp",
+      "startsin"))) == timedelta(minutes=15) }}'
+    alias: Loadshedding 15 minutes
+  - platform: template
+    value_template: '{{ timedelta(minutes=(state_attr("binary_sensor.kloofendal_loadshedding_esp",
+      "startsin"))) == timedelta(minutes=30) }}'
+    alias: Loadshedding 30 minutes
+  condition:
+  - condition: time
+    before: input_datetime.sleep
+    after: input_datetime.wake
+  action:
+  - service: notify.mobile_app_rudi_oppo
+    data:
+      message: Load Shedding
+      title: Load Shedding starts in {{     (state_attr("binary_sensor.kloofendal_loadshedding_esp",
+        "startsin")) }} min
+  - service: media_player.volume_set
+    data:
+      volume_level: 0.7
+    target:
+      entity_id: media_player.bedroom_speaker
+  - service: media_player.volume_set
+    data:
+      volume_level: 0.7
+    target:
+      entity_id: media_player.kitchen_speaker
+  - service: tts.cloud_say
+    data:
+      entity_id: media_player.assistant_speakers
+      cache: true
+      message: Load shedding is currently Stage {{ states( 'sensor.esp_status' ) }}
+        and will start at {{ as_timestamp(state_attr( 'binary_sensor.kloofendal_loadshedding_esp',
+        'starts')) | timestamp_custom("%I:%M %p", true) }}, that is {{ (state_attr("binary_sensor.kloofendal_loadshedding_esp",
+        "startsin")) }} minutes from now.
+  - service: notify.mobile_app_tanya_oppo
+    data:
+      message: Load Shedding
+      title: Load Shedding starts in {{     (state_attr("binary_sensor.kloofendal_loadshedding_esp",
+        "startsin")) }} min
+  - service: notify.html_browser_absa_laptop
+    data:
+      message: Load Shedding
+      title: Load Shedding starts in {{     (state_attr("binary_sensor.kloofendal_loadshedding_esp",
+        "startsin")) }} min
+  mode: single
+- id: '1657211274652'
+  alias: Load Shedding (Ending)
+  description: ''
+  trigger:
+  - platform: template
+    value_template: '{{ timedelta(minutes=(state_attr("binary_sensor.kloofendal_loadshedding_esp",
+      "endsin"))) == timedelta(minutes=30) }}'
+  condition:
+  - condition: and
+    conditions:
+    - condition: time
+      after: input_datetime.wake
+      before: input_datetime.sleep
+    - condition: not
+      conditions:
+      - condition: state
+        entity_id: sensor.esp_status
+        state: Unknown
+      - condition: state
+        entity_id: sensor.esp_status
+        state: No Load Shedding
+    enabled: true
+  action:
+  - service: notify.mobile_app_rudi_oppo
+    data:
+      message: Load shedding is currently {{ states( 'sensor.load_shedding_stage'
+        ) }}. Load shedding in the West Rand will end soon, hopefully before {{ as_timestamp(state_attr('binary_sensor.kloofendal_loadshedding_esp',
+        'ends')) | timestamp_custom("%H:%M", true) }}.
+      title: Load Shedding
+  - service: media_player.volume_set
+    data:
+      volume_level: 0.7
+    target:
+      entity_id: media_player.bedroom_speaker
+  - service: media_player.volume_set
+    data:
+      volume_level: 0.7
+    target:
+      entity_id: media_player.kitchen_speaker
+  - service: tts.cloud_say
+    data:
+      entity_id: media_player.bedroom_speaker
+      message: Load shedding is currently {{ states( 'sensor.esp_status' ) }}. Load
+        shedding will end soon, hopefully before {{ as_timestamp(state_attr('binary_sensor.kloofendal_loadshedding_esp',
+        'ends')) | timestamp_custom("%I:%M %p", true) }}.
+      cache: true
+  - service: tts.cloud_say
+    data:
+      entity_id: media_player.kitchen_speaker
+      message: Load shedding is currently {{ states( 'sensor.esp_status' ) }}. Load
+        shedding will end soon, hopefully before {{ as_timestamp(state_attr('binary_sensor.kloofendal_loadshedding_esp',
+        'ends')) | timestamp_custom("%I:%M %p", true) }}.
+      cache: true
+  - service: notify.mobile_app_rudi_oppo
+    data:
+      message: TTS
+      data:
+        ttl: 0
+        priority: high
+        media_stream: alarm_stream
+        tts_text: Load shedding will end soon, hopefully before {{ as_timestamp(state_attr('binary_sensor.kloofendal_loadshedding_esp',
+          'ends')) | timestamp_custom("%I:%M %p", true) }}.  Time to switch of the
+          generator and save some gas.
+  mode: single
+- id: '1657218088006'
+  alias: Load Shedding (Stage)
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.esp_status
+  condition:
+  - condition: template
+    value_template: '{{ trigger.from_state.state != ''unavailable'' and trigger.to_state.state
+      != ''unavailable'' }}'
+  action:
+  - choose:
+    - conditions:
+      - condition: or
+        conditions:
+        - condition: time
+          after: input_datetime.sleep
+          weekday:
+          - mon
+          - tue
+          - wed
+          - thu
+          - fri
+          - sat
+          - sun
+          before: 00:00:00
+        - condition: time
+          before: input_datetime.wake
+          weekday:
+          - sun
+          - sat
+          - fri
+          - thu
+          - wed
+          - tue
+          - mon
+          after: 00:00:00
+      sequence:
+      - wait_for_trigger:
+        - platform: time
+          at: input_datetime.wake
+        continue_on_timeout: false
+    default: []
+  - service: notify.mobile_app_rudi_oppo
+    data:
+      title: Load Shedding
+      message: Load Shedding Stage {{ states.sensor.esp_status.state }}
+  - service: tts.cloud_say
+    data:
+      entity_id: media_player.assistant_speakers
+      cache: true
+      message: '{% if is_state("sensor.esp_status", "No Load Shedding") %} Load Shedding
+        suspended {% else %} Load Shedding Stage {{ states.sensor.esp_status.state
+        }} {% endif %}'
+  mode: single
+- id: '1657274688294'
+  alias: Load Shedding (Turn Off Geysers)
+  description: ''
+  trigger:
+  - platform: template
+    value_template: '{{ timedelta(minutes=(state_attr("binary_sensor.kloofendal_loadshedding_esp",
+      "startsin"))) == timedelta(minutes=5) }}'
+  condition:
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: sensor.esp_status
+      state: Unknown
+    - condition: state
+      entity_id: sensor.esp_status
+      state: No Load Shedding
+    enabled: true
+  action:
+  - service: homeassistant.turn_off
+    target:
+      entity_id:
+      - switch.outside_building_and_geyser_switch_1
+      - switch.asc_geyser_switch_1
+    data: {}
+  mode: single
+- id: '1657274855875'
+  alias: Load Shedding (Turn Geysers On)
+  description: Turn on Geysers after Load Shedding
+  trigger:
+  - platform: template
+    value_template: '{{ timedelta(minutes=(state_attr("binary_sensor.kloofendal_loadshedding_esp",
+      "endsin"))) == timedelta(minutes=5) }}'
+  condition:
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: sensor.esp_status
+      state: Unknown
+    - condition: state
+      entity_id: sensor.esp_status
+      state: No Load Shedding
+    enabled: true
+  action:
+  - service: homeassistant.turn_on
+    data: {}
+    target:
+      entity_id:
+      - switch.asc_geyser_switch_1
+  mode: single
+- id: '1657553203018'
+  alias: Main Geyser Hot Notification
+  description: Notification to Cellphone to advise geyser is hot
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.main_geyser_heating
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+    to: 'off'
+  condition:
+  - condition: device
+    type: is_on
+    device_id: f19ca649dbe031c8f91a20868bd09e30
+    entity_id: switch.asc_geyser_switch_1
+    domain: switch
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  action:
+  - service: notify.mobile_app_rudi_oppo
+    data:
+      message: Main Geyser Hot
+  mode: single
+- id: '1657570700857'
+  alias: Notify of events Frigate -> Telegram
+  trigger:
+  - platform: mqtt
+    topic: frigate/events
+  condition:
+  - condition: template
+    value_template: '{{ trigger.payload_json["type"] == "end" }}'
+  - condition: time
+    before: 06:00:00
+    after: '19:00:00'
+  action:
+  - service: notify.diemeesterha
+    data_template:
+      message: A {{trigger.payload_json["after"]["label"]}} was detected.
+      data:
+        photo:
+        - url: https://homeassistant.diemeester.com/api/frigate/notifications/{{trigger.payload_json["after"]["id"]}}/thumbnail.jpg
+          caption: A {{trigger.payload_json["after"]["label"]}} was detected on {{
+            trigger.payload_json["after"]["camera"] }} camera
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 45
+      milliseconds: 0
+  - service: notify.diemeesterha
+    data_template:
+      message: Video of alert
+      data:
+        video:
+        - url: https://homeassistant.diemeester.com/api/frigate/notifications/{{trigger.payload_json["after"]["id"]}}/{{trigger.payload_json["after"]["camera"]}}/clip.mp4
+          timeout: 1000
+          caption: A {{trigger.payload_json["after"]["label"]}} was detected on {{
+            trigger.payload_json["after"]["camera"] }} camera
+  mode: single
+- id: '1660248879857'
+  alias: 'Geyser: Turn on Geyser on Non-Workday'
+  description: ''
+  trigger:
+  - platform: time
+    at: 07:00:00
+  condition:
+  - condition: state
+    entity_id: binary_sensor.workday_sensor
+    state: 'off'
+  action:
+  - service: homeassistant.turn_on
+    data: {}
+    target:
+      entity_id: switch.asc_geyser_switch_1
+  mode: single
+- id: '1660249303299'
+  alias: 'Geyser: Turn on Bar Geyser Tuesday''s & Friday''s'
+  description: ''
+  trigger:
+  - platform: time
+    at: 07:30:00
+  condition:
+  - condition: time
+    weekday:
+    - tue
+    - fri
+  action:
+  - service: homeassistant.turn_on
+    data: {}
+    target:
+      entity_id: switch.outside_building_and_geyser_switch_1
+  mode: single
+- id: '1660250439702'
+  alias: Turn Geysers Off At Lights Out
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - light.bedroom
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 6
+      seconds: 0
+  condition:
+  - condition: time
+    after: '22:00:00'
+    before: 01:00:00
+  action:
+  - service: homeassistant.turn_off
+    data: {}
+    target:
+      entity_id:
+      - switch.asc_geyser_switch_1
+      - switch.outside_building_and_geyser_switch_1
+  mode: single
+- id: '1661540889751'
+  alias: Notify when someone enters or leaves a zone
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - person.rudi_o_kelly
+    - person.danika_o_kelly
+    - person.tanya_o_kelly
+    for:
+      hours: 0
+      minutes: 2
+      seconds: 0
+  condition:
+  - condition: template
+    value_template: '{{ trigger.from_state.state != trigger.to_state.state }}'
+  action:
+  - service: notify.diemeesterha
+    data_template:
+      title: Location update {{ states.sensor.time.state }}
+      message: '{{ trigger.to_state.attributes.friendly_name }} {% if trigger.to_state.state
+        == ''not_home'' %}has left {{ trigger.from_state.state }}{% endif %}{% if
+        trigger.from_state.state == ''not_home'' %}arrived at {{ trigger.to_state.state
+        }}{% endif %}'
+- id: '1663523457148'
+  alias: Load Shedding (Final Warning)
+  description: ''
+  trigger:
+  - platform: template
+    value_template: '{{ timedelta(minutes=(state_attr("binary_sensor.kloofendal_loadshedding_esp",
+      "startsin"))) == timedelta(minutes=5) }}'
+    alias: Loadshedding 5 minutes
+  condition:
+  - condition: time
+    after: input_datetime.wake
+  action:
+  - service: notify.mobile_app_rudi_oppo
+    data:
+      title: Load Shedding
+      message: Load Shedding starts in {{     (state_attr("binary_sensor.kloofendal_loadshedding_esp",
+        "startsin")) }} min
+  - service: media_player.volume_set
+    data:
+      volume_level: 0.7
+    target:
+      entity_id: media_player.bedroom_speaker
+  - service: media_player.volume_set
+    data:
+      volume_level: 0.7
+    target:
+      entity_id: media_player.kitchen_speaker
+  - service: tts.cloud_say
+    data:
+      entity_id: media_player.assistant_speakers
+      cache: true
+      language: af-ZA
+      options:
+        gender: female
+      message: 'Dis die laaste waarskuwing. In {{ (state_attr("binary_sensor.kloofendal_loadshedding_esp",
+        "startsin")) }} minute sal Eskom weer die krag afsit, Skakel die opwekker
+        aan. '
+  - service: notify.mobile_app_tanya_oppo
+    data:
+      title: Load Shedding
+      message: Load Shedding starts in {{     (state_attr("binary_sensor.kloofendal_loadshedding_esp",
+        "startsin")) }} min
+  - service: notify.mobile_app_rudi_oppo
+    data:
+      message: TTS
+      data:
+        ttl: 0
+        priority: high
+        media_stream: alarm_stream
+        tts_text: Final Warning Load Shedding starts in {{    (state_attr("binary_sensor.kloofendal_loadshedding_esp",
+          "startsin")) }} min, start the generator.
+  - service: notify.html_browser_absa_laptop
+    data:
+      title: Load Shedding
+      message: Load Shedding starts in {{     (state_attr("binary_sensor.kloofendal_loadshedding_esp",
+        "startsin")) }} min.
+  mode: single
+- id: '1663699813318'
+  alias: Plex - New media added
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.die_meester_plex_library_tv_shows
+    id: episode
+  action:
+  - service: notify.html_browser_absa_laptop
+    data:
+      message: '{{ state_attr( ''sensor.die_meester_plex_library_tv_shows'', ''last_added_item''
+        ) }} got added to {{ state_attr( ''sensor.die_meester_plex_library_tv_shows'',
+        ''friendly_name'' ) }}'
+      title: Something to Watch
+  - service: notify.diemeesterha
+    data:
+      title: New Episode Added
+      message: '{{ state_attr( ''sensor.die_meester_plex_library_tv_shows'', ''last_added_item''
+        )}} was added to {{ state_attr( ''sensor.die_meester_plex_library_tv_shows'',
+        ''friendly_name'' )}}'
+  - service: notify.mobile_app_tanya_oppo
+    data:
+      title: New Episode Added
+      message: '{{ state_attr( ''sensor.die_meester_plex_library_tv_shows'', ''last_added_item''
+        )}} was added to {{ state_attr( ''sensor.die_meester_plex_library_tv_shows'',
+        ''friendly_name'' )}}'
+  mode: single
+- id: '1663704936553'
+  alias: Turn Off NAS during Load Shedding at Night
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.kloofendal_loadshedding_esp
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  condition:
+  - condition: and
+    conditions:
+    - condition: time
+      before: input_datetime.wake
+    - condition: state
+      entity_id: switch.nas
+      state: 'on'
+  action:
+  - service: homeassistant.turn_off
+    data: {}
+    target:
+      entity_id: switch.nas
+  mode: single
+- id: '1663705047619'
+  alias: Turn On NAS after Load Shedding at Night
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.kloofendal_loadshedding_esp
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  condition:
+  - condition: and
+    conditions:
+    - condition: time
+      before: input_datetime.wake
+    - condition: state
+      entity_id: switch.nas
+      state: 'off'
+  action:
+  - service: homeassistant.turn_on
+    data: {}
+    target:
+      entity_id: switch.nas
+  mode: single
+- id: '1664464599821'
+  alias: Bedroom Light Increment Scene
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.2ch_switch_2
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: switch.bedroom_ws
+    state: 'on'
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+  action:
+  - service: input_select.select_next
+    data: {}
+    target:
+      entity_id: input_select.bedroomscene
+  mode: single
+- id: '1664464771642'
+  alias: Bedroom Lights Change Scene
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.bedroomscene
+  condition: []
+  action:
+  - service: scene.turn_on
+    target:
+      entity_id: scene.{{ states('input_select.bedroomscene') }}
+  mode: single
+- id: '1664482734870'
+  alias: Reload Load Shedding after Restart
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.esp_load_shedding
+    to: unknown
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  - platform: homeassistant
+    event: start
+  condition: []
+  action:
+  - service: homeassistant.update_entity
+    data: {}
+    target:
+      entity_id: sensor.esp_load_shedding
+  mode: single
+- id: '1664483467435'
+  alias: Turn Down Lights when Watching TV
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - media_player.plex_plex_for_samsung_tv_2018
+    to: playing
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 30
+    id: Plex_Playing
+  - platform: state
+    entity_id:
+    - media_player.plex_plex_for_samsung_tv_2018
+    from: playing
+    id: plex_not_playing
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+  condition:
+  - condition: time
+    after: '20:00:00'
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: Plex_Playing
+      sequence:
+      - service: scene.turn_on
+        data: {}
+        target:
+          entity_id: scene.tv_night
+    - conditions:
+      - condition: trigger
+        id: plex_not_playing
+      sequence:
+      - service: scene.turn_on
+        data: {}
+        target:
+          entity_id: scene.bedroom_night
+  mode: single

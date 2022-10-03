@@ -1,0 +1,6 @@
+# Customizations
+
+  # sensor.sonoff_10013bbb98_current
+  #   device_class: current
+# sensor.sonoff_10013218b0_current
+#   device_class: current

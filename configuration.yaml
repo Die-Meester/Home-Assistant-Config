@@ -1,0 +1,14 @@
+#####
+# Packages are loaded from integration folder
+#####
+
+homeassistant:
+  name: Die Huis
+  latitude: !secret home_latitude
+  longitude: !secret home_longitude
+  elevation: !secret home_elevation
+  unit_system: metric
+  # internal_url: !secret local_url
+  # external_url: !secret public_url
+  customize: !include customize.yaml
+  packages: !include_dir_named integrations

@@ -1,10 +1,13 @@
 # WARNING: Make your GitHub repo Private if you are using this as it is
 # Example .gitignore file for your config dir.
 # An * ensures that everything will be ignored.
+!automations/*
+!cutomizations/*
+!entities/*
 *
 # You can whitelist files/folders with !, these will not be ignored.
 !*.yaml
-!.gitignore
+.gitignore
 !*.md
 !*.sh
 !*.js*
@@ -24,5 +27,10 @@ secrets.yaml
 .sonoff.json
 .storage
 .cloud
-.google.token 
+.O365-token-cache
+.ssh
+.google.token
+*.pem
+o365*
+watchman_report.txt
 home-assistant.log

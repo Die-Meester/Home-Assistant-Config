@@ -1,0 +1,58 @@
+#####
+# mqtt Sensors
+#####
+#mqtt: !include_dir_list ../entities/mqtt
+#binary_sensor: !include ../binary_sensor.yaml
+mqtt:
+  binary_sensor:
+    - name: "1Ch Switch"
+      state_topic: "home/switch_1ch_1"
+      icon: mdi:light-switch
+      off_delay: 2
+    - name: "2Ch Switch - 1"
+      icon: mdi:light-switch
+      state_topic: "home/sensor1"
+      off_delay: 2
+    - name: "2Ch Switch - 2"
+      icon: mdi:light-switch
+      state_topic: "home/sensor2"
+      off_delay: 2
+    - name: "3Ch Switch - 1"
+      state_topic: "home/switch_3ch_1"
+      icon: mdi:light-switch
+      off_delay: 2
+    - name: "3Ch Switch - 2"
+      state_topic: "home/switch_3ch_2"
+      icon: mdi:light-switch
+      off_delay: 2
+    - name: "3Ch Switch - 3"
+      state_topic: "home/switch_3ch_3"
+      icon: mdi:light-switch
+      off_delay: 2
+    - name: "Bedroom Front Door"
+      state_topic: "home/bedr_door_front"
+      device_class: door
+      unique_id: bedr_front_door
+    - name: "Bedroom Rear Door"
+      state_topic: "home/bedr_door_back"
+      device_class: door
+      unique_id: bedr_rear_door
+    - name: "Remote 1 Button A"
+      state_topic: "home/remote_1_a"
+      icon: mdi:remote
+      off_delay: 2
+    - name: "Remote 1 Button B"
+      state_topic: "home/remote_1_b"
+      icon: mdi:remote
+      off_delay: 2
+    - name: "Remote 1 Button C"
+      state_topic: "home/remote_1_c"
+      icon: mdi:remote
+      off_delay: 2
+    - name: "Remote 1 Button D"
+      state_topic: "home/remote_1_d"
+      icon: mdi:remote
+      off_delay: 2
+    - name: "Gate Button"
+      state_topic: "home/button"
+      off_delay: 2

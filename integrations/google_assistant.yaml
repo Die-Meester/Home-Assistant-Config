@@ -1,0 +1,12 @@
+#####
+# Google Assistant Integration
+# https://www.home-assistant.io/integrations/google_assistant/#yaml-configuration
+# 2022-04-17
+######
+
+google_assistant:
+  project_id: ha-smart-home-10fe5
+  service_account:
+    private_key: !secret google_assistant_private_key
+    client_email: !secret google_assistant_email
+  report_state: true

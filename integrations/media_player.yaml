@@ -1,0 +1,6 @@
+#####
+# Migrating to directories
+#
+#####
+
+media_player: !include_dir_list ../entities/media_player

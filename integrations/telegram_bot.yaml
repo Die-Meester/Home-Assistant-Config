@@ -1,0 +1,5 @@
+telegram_bot:
+  - platform: polling
+    api_key: 5465656288:AAFj7NriCCMc2k5wFrnsmT2LYEpZazve4OA
+    allowed_chat_ids:
+      - 1505925713

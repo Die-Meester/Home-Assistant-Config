@@ -1,0 +1,30 @@
+#####
+# Utility Meter
+#####
+
+utility_meter:
+  daily_energy_total:
+    source: sensor.power_mon_total_usage
+    name: Total Daily Energy
+    cycle: daily
+  daily_energy_main:
+    source: sensor.main_db_usage
+    name: Main Daily Energy
+    cycle: daily
+  daily_energy_bar:
+    source: sensor.bar_db_usage
+    name: Bar Daily Energy
+    cycle: daily
+
+  monthly_energy_total:
+    source: sensor.power_mon_total_usage
+    name: Total Monthly Energy
+    cycle: monthly
+  monthly_energy_main:
+    source: sensor.main_db_usage
+    name: Main Monthly Energy
+    cycle: monthly
+  monthly_energy_bar:
+    source: sensor.bar_db_usage
+    name: Bar Monthly Energy
+    cycle: monthly

@@ -1,0 +1,7 @@
+#####
+# Migrating to directories
+#
+#####
+
+shell_command:
+  switch_nas_off: "nohup ssh -i /config/.ssh/id_rsa diemeester@192.168.1.14 '/home/diemeester/scripts/shutdown_nas.sh' &"

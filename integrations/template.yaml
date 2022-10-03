@@ -1,0 +1,5 @@
+#####
+# All Template moved
+#####
+
+template: !include_dir_list ../entities/template

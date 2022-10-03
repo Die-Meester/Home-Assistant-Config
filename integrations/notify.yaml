@@ -1,0 +1,8 @@
+notify:
+  - platform: msteams
+    url: !secret absa_knowledge_channel
+    name: Absa Knowledge Channel
+
+  - platform: telegram
+    name: DieMeesterHA
+    chat_id: 1505925713

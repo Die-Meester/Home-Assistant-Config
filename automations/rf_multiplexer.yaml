@@ -1,0 +1,9 @@
+id: 4df393a7-c64e-4c20-a289-a074b82d8e2a
+alias: rfbridge_demultiplexer
+trigger:
+- platform: mqtt
+  topic: tele/RF_Bridge/RESULT
+action:
+- service: python_script.rfbridge_demux
+  data_template:
+    payload: '{{trigger.payload_json.RfReceived.Data}}'

@@ -21,6 +21,7 @@
 secrets.yaml
 
 # Ignore these files/folders
+.sonoff.json
 .storage
 .cloud
 .google.token 

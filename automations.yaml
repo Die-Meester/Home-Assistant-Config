@@ -695,7 +695,7 @@
     entity_id: sensor.die_meester_plex_library_tv_shows
     id: episode
   action:
-  - service: notify.html_browser_absa_laptop
+  - service: notify.html_browser
     data:
       message: '{{ state_attr( ''sensor.die_meester_plex_library_tv_shows'', ''last_added_item''
         ) }} got added to {{ state_attr( ''sensor.die_meester_plex_library_tv_shows'',

@@ -10,19 +10,10 @@ monitor_docker:
       - lidarr
       - transmission
       - frigate
-      - addon_a0d7b954_nginxproxymanager
-      - addon_ccab4aaf_frigate-proxy
-      - addon_cebe7a76_hassio_google_drive_backup
-      - addon_a0d7b954_adguard
-      - addon_a0d7b954_unifi
-      - addon_core_mosquitto
       - homeassistant
       - portainer
       - uptime-kuma
       - heimdall
-      - ubuntu-desktop-lxde-vnc
-      - hassio_supervisor
-      - hassio_observer
     rename:
       dockerproxy: "Docker Proxy"
       sonarr: "Sonarr"
@@ -32,18 +23,10 @@ monitor_docker:
       lidarr: "Lidarr"
       transmission: "Transmission"
       frigate: "Frigate"
-      addon_a0d7b954_nginxproxymanager: "Nginx Proxy"
-      addon_ccab4aaf_frigate-proxy: "Frigate Proxy"
-      addon_cebe7a76_hassio_google_drive_backup: "Google Drive Backup"
-      addon_a0d7b954_adguard: "Adguard"
-      addon_a0d7b954_unifi: "Unifi"
-      addon_core_mosquitto: "Mosquitto"
       homeassistant: "Home Assistant"
       portainer: "Portainer"
       uptime-kuma: "Uptime Kuma"
       heimdall: "Heimdall"
-      ubuntu-desktop-lxde-vnc: "Ubuntu Desktop"
-      hassio_supervisor: "Supervisor"
     monitored_conditions:
       - version
       - containers_running

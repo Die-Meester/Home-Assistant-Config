@@ -1,8 +1,7 @@
 monitor_docker:
   - name: Docker
-    url: tcp://192.168.1.14:2375
     containers:
-      - dockerproxy
+      - adguardhome
       - sonarr
       - radarr
       - jackett
@@ -13,9 +12,13 @@ monitor_docker:
       - homeassistant
       - portainer
       - uptime-kuma
+      - unifi-controller
       - heimdall
+      - webtop
+      - nginxproxymanager
+      - cloudflare-ddns
     rename:
-      dockerproxy: "Docker Proxy"
+      adguardhome: "Adguard Home"
       sonarr: "Sonarr"
       radarr: "Radarr"
       jackett: "Jackett"
@@ -27,6 +30,10 @@ monitor_docker:
       portainer: "Portainer"
       uptime-kuma: "Uptime Kuma"
       heimdall: "Heimdall"
+      webtop: "Webtop"
+      unifi-controller: UniFi
+      nginxproxymanager: "Nginx Proxy Manager"
+      cloudflare-ddns: "Cloudflare DDNS"
     monitored_conditions:
       - version
       - containers_running

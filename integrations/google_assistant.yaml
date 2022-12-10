@@ -9,4 +9,5 @@ google_assistant:
   service_account:
     private_key: !secret google_assistant_private_key
     client_email: !secret google_assistant_email
+  secure_devices_pin: !secret google_assistant_pin
   report_state: true

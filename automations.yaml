@@ -75,7 +75,9 @@
       - service: light.turn_on
         data: {}
         target:
-          entity_id: light.backyard
+          entity_id:
+          - light.backyard
+          - light.patio
       - service: notify.diemeesterha
         data:
           title: Lights
@@ -87,7 +89,9 @@
       - service: light.turn_off
         data: {}
         target:
-          entity_id: light.backyard
+          entity_id:
+          - light.backyard
+          - light.patio
       - service: notify.mobile_app_rudi_oppo
         data:
           message: Outside Lights were turned off.
@@ -359,12 +363,13 @@
       volume_level: 0.7
     target:
       entity_id: media_player.kitchen_speaker
-  - service: tts.cloud_say
+  - service: tts.google_translate_say
     data:
-      entity_id: media_player.bedroom_speaker
-      message: Load shedding is currently {{ states( 'sensor.esp_status' ) }}. Load
-        shedding will end soon, hopefully before {{ as_timestamp(state_attr('binary_sensor.kloofendal_loadshedding_esp',
-        'ends')) | timestamp_custom("%I:%M %p", true) }}.
+      entity_id: media_player.assistant_speakers
+      message: "Beurtkrag is tans fase {{ states( 'sensor.esp_status' ) }}. Die munsipale
+        krag behoort binnekort weer aan kom, hopelik voor {{\nas_timestamp(state_attr('binary_sensor.kloofendal_loadshedding_esp',\n'ends'))
+        | timestamp_custom(\"%H:%M\", true) }}.    \n"
+      language: af
       cache: true
   - service: tts.cloud_say
     data:
@@ -373,6 +378,7 @@
         shedding will end soon, hopefully before {{ as_timestamp(state_attr('binary_sensor.kloofendal_loadshedding_esp',
         'ends')) | timestamp_custom("%I:%M %p", true) }}.
       cache: true
+    enabled: false
   - service: notify.mobile_app_rudi_oppo
     data:
       message: TTS
@@ -432,13 +438,17 @@
     data:
       title: Load Shedding
       message: Load Shedding Stage {{ states.sensor.esp_status.state }}
-  - service: tts.cloud_say
+  - service: tts.google_translate_say
     data:
       entity_id: media_player.assistant_speakers
+      message: '{% if is_state("sensor.esp_status", "No Load Shedding") %} Daar is
+        tans geen beurtkrag. {% else %} Beurtkrag is tans fase {{ states.sensor.esp_status.state
+
+        }} {% endif %}
+
+        '
+      language: af
       cache: true
-      message: '{% if is_state("sensor.esp_status", "No Load Shedding") %} Load Shedding
-        suspended {% else %} Load Shedding Stage {{ states.sensor.esp_status.state
-        }} {% endif %}'
   mode: single
 - id: '1657274688294'
   alias: Load Shedding (Turn Off Geysers)
@@ -883,3 +893,56 @@
     target:
       entity_id: light.danika_room
   mode: single
+- id: '1670174021966'
+  alias: Motion | Lounge
+  description: Lounge Motion Detection
+  use_blueprint:
+    path: homeassistant/motion_light.yaml
+    input:
+      motion_entity: binary_sensor.lumi_lumi_sensor_motion_aq2_iaszone_2
+      light_target:
+        entity_id:
+        - light.lounge
+        - light.diningroom
+- id: '1670222598477'
+  alias: Motion | Foyer | Manual
+  description: Manual Foyer
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.lumi_lumi_sensor_motion_aq2_iaszone_2
+    from: 'off'
+    to: 'on'
+  condition:
+  - or:
+    - condition: sun
+      before: sunrise
+      after: sunset
+    - condition: numeric_state
+      entity_id: sensor.lumi_lumi_sensor_motion_aq2_illuminance_2
+      below: 11
+  action:
+  - service: light.turn_on
+    data: {}
+    target:
+      entity_id:
+      - light.diningroom
+      - light.lounge
+  - wait_for_trigger:
+    - platform: state
+      entity_id:
+      - binary_sensor.lumi_lumi_sensor_motion_aq2_iaszone_2
+      from: 'on'
+      to: 'off'
+  - delay:
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
+  - service: light.turn_off
+    data: {}
+    target:
+      entity_id:
+      - light.diningroom
+      - light.lounge
+  mode: restart

@@ -1,0 +1,9 @@
+platform: google_cloud
+key_file: googlecloud.json
+language: af-ZA
+gender: female
+voice: af-ZA-Standard-A
+encoding: linear16
+speed: 0.9
+pitch: -2.5
+gain: -5.0

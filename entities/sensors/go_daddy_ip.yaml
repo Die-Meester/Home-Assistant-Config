@@ -1,7 +1,0 @@
-platform: rest
-name: "GoDaddy IP"
-resource: !secret go_daddy_url
-headers:
-  Authorization: !secret go_daddy_header
-value_template: "{{ value_json[0].data }}"
-unique_id: 9329677e-b794-48a9-8c14-45f4b9a73abd

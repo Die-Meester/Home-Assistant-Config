@@ -77,7 +77,7 @@
         target:
           entity_id:
           - light.backyard
-          - light.patio
+          - light.braai
       - service: notify.diemeesterha
         data:
           title: Lights
@@ -91,7 +91,7 @@
         target:
           entity_id:
           - light.backyard
-          - light.patio
+          - light.braai
       - service: notify.mobile_app_rudi_oppo
         data:
           message: Outside Lights were turned off.
@@ -191,21 +191,25 @@
   - condition: state
     entity_id: person.rudi_o_kelly
     state: home
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
   action:
   - choose:
     - conditions:
       - condition: trigger
         id: tanya_arrived_ouma
       sequence:
-      - service: tts.cloud_say
+      - service: tts.google_say
         data:
           entity_id: media_player.bedroom_speaker
-          message: Tanya has entered the Ouma Zone
+          message: Tanya has arrived at Ouma.
     - conditions:
       - condition: trigger
         id: tanya_left_ouma
       sequence:
-      - service: tts.cloud_say
+      - service: tts.google_say
         data:
           entity_id: media_player.bedroom_speaker
           message: Tanya has left Ouma, get everything ready!
@@ -305,14 +309,14 @@
       volume_level: 0.7
     target:
       entity_id: media_player.kitchen_speaker
-  - service: tts.cloud_say
+  - service: tts.google_say
     data:
+      message: Load Shedding will start in {{ state_attr( "binary_sensor.kloofendal_loadshedding_esp",
+        "startsin") }} minutes.  Load shedding will be activated at {{ as_timestamp(state_attr(
+        'binary_sensor.kloofendal_loadshedding_esp', 'starts')) | timestamp_custom("%I:%M
+        %p", true) }} and will be suspended at {{ as_timestamp(state_attr( 'binary_sensor.kloofendal_loadshedding_esp',
+        'ends')) | timestamp_custom("%I:%M %p", true) }}.
       entity_id: media_player.assistant_speakers
-      cache: true
-      message: Load shedding is currently Stage {{ states( 'sensor.esp_status' ) }}
-        and will start at {{ as_timestamp(state_attr( 'binary_sensor.kloofendal_loadshedding_esp',
-        'starts')) | timestamp_custom("%I:%M %p", true) }}, that is {{ (state_attr("binary_sensor.kloofendal_loadshedding_esp",
-        "startsin")) }} minutes from now.
   - service: notify.mobile_app_tanya_oppo
     data:
       message: Load Shedding
@@ -363,7 +367,7 @@
       volume_level: 0.7
     target:
       entity_id: media_player.kitchen_speaker
-  - service: tts.google_translate_say
+  - service: tts.google_say
     data:
       entity_id: media_player.assistant_speakers
       message: "Beurtkrag is tans fase {{ states( 'sensor.esp_status' ) }}. Die munsipale
@@ -371,14 +375,14 @@
         | timestamp_custom(\"%H:%M\", true) }}.    \n"
       language: af
       cache: true
-  - service: tts.cloud_say
+  - service: tts.google_say
     data:
       entity_id: media_player.kitchen_speaker
-      message: Load shedding is currently {{ states( 'sensor.esp_status' ) }}. Load
-        shedding will end soon, hopefully before {{ as_timestamp(state_attr('binary_sensor.kloofendal_loadshedding_esp',
+      message: Load shedding is currently stage {{ states( 'sensor.esp_status' ) }}.
+        Load shedding will end soon, hopefully before {{ as_timestamp(state_attr('binary_sensor.kloofendal_loadshedding_esp',
         'ends')) | timestamp_custom("%I:%M %p", true) }}.
       cache: true
-    enabled: false
+    enabled: true
   - service: notify.mobile_app_rudi_oppo
     data:
       message: TTS
@@ -438,16 +442,15 @@
     data:
       title: Load Shedding
       message: Load Shedding Stage {{ states.sensor.esp_status.state }}
-  - service: tts.google_translate_say
+  - service: tts.google_say
     data:
-      entity_id: media_player.assistant_speakers
-      message: '{% if is_state("sensor.esp_status", "No Load Shedding") %} Daar is
-        tans geen beurtkrag. {% else %} Beurtkrag is tans fase {{ states.sensor.esp_status.state
-
-        }} {% endif %}
+      entity_id: all
+      message: '{% if is_state("sensor.esp_status", "No Load Shedding") %} Load shedding
+        has been suspended. {% else %} Load shedding has been changed to stage {{
+        states.sensor.esp_status.state }} {% endif %}
 
         '
-      language: af
+      language: en
       cache: true
   mode: single
 - id: '1657274688294'
@@ -668,16 +671,13 @@
       volume_level: 0.7
     target:
       entity_id: media_player.kitchen_speaker
-  - service: tts.cloud_say
+  - service: tts.google_say
     data:
-      entity_id: media_player.assistant_speakers
-      cache: true
-      language: af-ZA
-      options:
-        gender: female
-      message: 'Dis die laaste waarskuwing. In {{ (state_attr("binary_sensor.kloofendal_loadshedding_esp",
-        "startsin")) }} minute sal Eskom weer die krag afsit, Skakel die opwekker
-        aan. '
+      message: This is the final load shedding warning.  In {{ state_attr( "binary_sensor.kloofendal_loadshedding_esp",
+        "startsin") }} minutes load shedding will be activated. Power should be restored
+        at {{ as_timestamp(state_attr( 'binary_sensor.kloofendal_loadshedding_esp',
+        'ends')) | timestamp_custom("%I:%M %p", true) }}.
+      entity_id: all
   - service: notify.mobile_app_tanya_oppo
     data:
       title: Load Shedding
@@ -692,7 +692,7 @@
         media_stream: alarm_stream
         tts_text: Final Warning Load Shedding starts in {{    (state_attr("binary_sensor.kloofendal_loadshedding_esp",
           "startsin")) }} min, start the generator.
-    enabled: false
+    enabled: true
   - service: notify.html_browser
     data:
       title: Load Shedding
@@ -727,22 +727,15 @@
         ''friendly_name'' )}}'
   mode: single
 - id: '1663704936553'
-  alias: Turn Off NAS during Load Shedding at Night
-  description: ''
+  alias: Turn Off NAS during Load Shedding
+  description: Preserve power of Inverter
   trigger:
-  - platform: state
-    entity_id:
-    - binary_sensor.kloofendal_loadshedding_esp
-    to: 'on'
-    for:
-      hours: 0
-      minutes: 5
-      seconds: 0
+  - platform: template
+    value_template: '{{ timedelta(minutes=(state_attr("binary_sensor.kloofendal_loadshedding_esp",
+      "startsin"))) == timedelta(minutes=5) }}'
   condition:
   - condition: and
     conditions:
-    - condition: time
-      before: input_datetime.wake
     - condition: state
       entity_id: switch.nas
       state: 'on'
@@ -750,7 +743,18 @@
   - service: homeassistant.turn_off
     data: {}
     target:
+      entity_id:
+      - switch.docker_sonarr
+      - switch.docker_radarr
+      - switch.docker_transmission
+  - service: homeassistant.turn_off
+    data: {}
+    target:
       entity_id: switch.nas
+  - service: telegram_bot.send_message
+    data:
+      title: NAS
+      message: Nas are going down for loadshedding
   mode: single
 - id: '1663705047619'
   alias: Turn On NAS after Load Shedding at Night
@@ -762,13 +766,14 @@
     to: 'off'
     for:
       hours: 0
-      minutes: 5
+      minutes: 0
       seconds: 0
   condition:
   - condition: and
     conditions:
     - condition: time
       before: input_datetime.wake
+      enabled: false
     - condition: state
       entity_id: switch.nas
       state: 'off'
@@ -926,7 +931,6 @@
     data: {}
     target:
       entity_id:
-      - light.diningroom
       - light.lounge
   - wait_for_trigger:
     - platform: state
@@ -943,6 +947,43 @@
     data: {}
     target:
       entity_id:
-      - light.diningroom
       - light.lounge
   mode: restart
+- id: '1672432928510'
+  alias: Cycle Lights
+  description: ''
+  trigger: []
+  condition: []
+  action: []
+  mode: single
+- id: '1674627123653'
+  alias: Turn on Docker containers
+  description: Check Plex state is not available and turn on Docker containers.
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.plex_recently_added
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+    to: Online
+  condition: []
+  action:
+  - service: homeassistant.turn_on
+    data: {}
+    target:
+      entity_id:
+      - switch.docker_transmission
+  - delay:
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
+  - service: homeassistant.turn_on
+    data: {}
+    target:
+      entity_id:
+      - switch.docker_sonarr
+      - switch.docker_radarr
+  mode: single

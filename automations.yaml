@@ -545,7 +545,7 @@
       message: A {{trigger.payload_json["after"]["label"]}} was detected.
       data:
         photo:
-        - url: https://homeassistant.diemeester.com/api/frigate/notifications/{{trigger.payload_json["after"]["id"]}}/thumbnail.jpg
+        - url: https://homeassistant.diemeester.co.za/api/frigate/notifications/{{trigger.payload_json["after"]["id"]}}/thumbnail.jpg
           caption: A {{trigger.payload_json["after"]["label"]}} was detected on {{
             trigger.payload_json["after"]["camera"] }} camera
   - delay:
@@ -558,7 +558,7 @@
       message: Video of alert
       data:
         video:
-        - url: https://homeassistant.diemeester.com/api/frigate/notifications/{{trigger.payload_json["after"]["id"]}}/{{trigger.payload_json["after"]["camera"]}}/clip.mp4
+        - url: https://homeassistant.diemeester.co.za/api/frigate/notifications/{{trigger.payload_json["after"]["id"]}}/{{trigger.payload_json["after"]["camera"]}}/clip.mp4
           timeout: 1000
           caption: A {{trigger.payload_json["after"]["label"]}} was detected on {{
             trigger.payload_json["after"]["camera"] }} camera
@@ -645,7 +645,7 @@
         trigger.from_state.state == ''not_home'' %}arrived at {{ trigger.to_state.state
         }}{% endif %}'
 - id: '1663523457148'
-  alias: Load Shedding (Final Warning)
+  alias: Load Shedding (Final Warning)docke
   description: ''
   trigger:
   - platform: template

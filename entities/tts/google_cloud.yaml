@@ -1,9 +1,9 @@
 platform: google_cloud
-key_file: googlecloud.json
+key_file: /config/entities/tts/googlecloud.json
 language: af-ZA
-gender: female
+gender: male
 voice: af-ZA-Standard-A
 encoding: linear16
-speed: 0.9
-pitch: -2.5
-gain: -5.0
+speed: 0.89
+pitch: 2.00
+gain: 5.0

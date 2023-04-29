@@ -49,7 +49,7 @@
       entity_id: light.fish_tanks_lights
   - service: notify.html_browser
     data:
-      message: Fish Tank Lights have been turned down.
+      message: Fish Tank Lights have been switched off.
   mode: single
 - id: '1650803161063'
   alias: 'Outside Lights: turn on and off based on elevation'
@@ -114,9 +114,9 @@
       - switch.kayden_pc
       - switch.danika_laptop
     data: {}
-  - service: notify.html_browser_home_assistant_co_za_work_laptop
+  - service: notify.diemeesterha
     data:
-      message: Kids Computers have been Shut Down
+      message: Kinders se Internet is af.
   mode: single
 - id: '1650803958450'
   alias: 'Garage Door: Rudi Garage'
@@ -309,14 +309,6 @@
       volume_level: 0.7
     target:
       entity_id: media_player.kitchen_speaker
-  - service: tts.google_say
-    data:
-      message: Load Shedding will start in {{ state_attr( "binary_sensor.kloofendal_loadshedding_esp",
-        "startsin") }} minutes.  Load shedding will be activated at {{ as_timestamp(state_attr(
-        'binary_sensor.kloofendal_loadshedding_esp', 'starts')) | timestamp_custom("%I:%M
-        %p", true) }} and will be suspended at {{ as_timestamp(state_attr( 'binary_sensor.kloofendal_loadshedding_esp',
-        'ends')) | timestamp_custom("%I:%M %p", true) }}.
-      entity_id: media_player.assistant_speakers
   - service: notify.mobile_app_tanya_oppo
     data:
       message: Load Shedding
@@ -327,6 +319,8 @@
       message: Load Shedding
       title: Load Shedding starts in {{     (state_attr("binary_sensor.kloofendal_loadshedding_esp",
         "startsin")) }} min
+  - service: script.load_shedding_warning
+    data: {}
   mode: single
 - id: '1657211274652'
   alias: Load Shedding (Ending)
@@ -391,8 +385,8 @@
         priority: high
         media_stream: alarm_stream
         tts_text: Load shedding will end soon, hopefully before {{ as_timestamp(state_attr('binary_sensor.kloofendal_loadshedding_esp',
-          'ends')) | timestamp_custom("%I:%M %p", true) }}.  Time to switch of the
-          generator and save some gas.
+          'ends')) | timestamp_custom("%I:%M %p", true) }}.
+    enabled: false
   mode: single
 - id: '1657218088006'
   alias: Load Shedding (Stage)
@@ -474,8 +468,8 @@
   - service: homeassistant.turn_off
     target:
       entity_id:
-      - switch.outside_building_and_geyser_switch_1
-      - switch.asc_geyser_switch_1
+      - switch.kitchen_geyser
+      - switch.main_geyser
     data: {}
   mode: single
 - id: '1657274855875'
@@ -499,8 +493,7 @@
   - service: homeassistant.turn_on
     data: {}
     target:
-      entity_id:
-      - switch.asc_geyser_switch_1
+      entity_id: switch.main_geyser
   mode: single
 - id: '1657553203018'
   alias: Main Geyser Hot Notification
@@ -645,7 +638,7 @@
         trigger.from_state.state == ''not_home'' %}arrived at {{ trigger.to_state.state
         }}{% endif %}'
 - id: '1663523457148'
-  alias: Load Shedding (Final Warning)docke
+  alias: Load Shedding (Final Warning)
   description: ''
   trigger:
   - platform: template
@@ -692,7 +685,7 @@
         media_stream: alarm_stream
         tts_text: Final Warning Load Shedding starts in {{    (state_attr("binary_sensor.kloofendal_loadshedding_esp",
           "startsin")) }} min, start the generator.
-    enabled: true
+    enabled: false
   - service: notify.html_browser
     data:
       title: Load Shedding
@@ -986,4 +979,23 @@
       entity_id:
       - switch.docker_sonarr
       - switch.docker_radarr
+  mode: single
+- id: '1675688633101'
+  alias: Calendar Notification
+  description: ''
+  trigger:
+  - platform: calendar
+    event: start
+    offset: -0:10:0
+    entity_id: calendar.family
+  condition: []
+  action:
+  - service: notify.persistent_notification
+    data:
+      message: Event {{ trigger.calendar_event.summary }} @ {{ trigger.calendar_event.start
+        }}
+  - service: notify.html_browser
+    data:
+      message: Event {{ trigger.calendar_event.summary }} @ {{ trigger.calendar_event.start
+        }}
   mode: single

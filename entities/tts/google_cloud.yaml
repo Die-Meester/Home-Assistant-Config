@@ -1,8 +1,8 @@
 platform: google_cloud
 key_file: /config/entities/tts/googlecloud.json
-language: af-ZA
+language: en-GB
 gender: male
-voice: af-ZA-Standard-A
+voice: en-GB-Standard-D
 encoding: linear16
 speed: 0.89
 pitch: 2.00

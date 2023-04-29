@@ -41,3 +41,33 @@ new_script:
       count: '5'
       sequence:
   mode: single
+load_shedding_warning:
+  alias: Load Shedding Warning
+  sequence:
+  - service: tts.google_cloud_say
+    data:
+      cache: false
+      entity_id: media_player.assistant_speakers
+      message: "{% set ls = {\n    \"starts\": state_attr(\"binary_sensor.kloofendal_loadshedding_esp\",
+        \"startsin\"),\n    \"commences\": as_timestamp(state_attr(\"binary_sensor.kloofendal_loadshedding_esp\",
+        \"starts\")) | timestamp_custom(\"%I:%M %p\", true),\n    \"end\": as_timestamp(state_attr(\"binary_sensor.kloofendal_loadshedding_esp\",
+        \"ends\")) | timestamp_custom(\"%I:%M %p\", true)\n} %} {% set message = [\n
+        \   \"Attention, citizens! We interrupt your regularly scheduled programming
+        to bring you an important announcement: in \" ~ ls.starts ~ \" minutes, the
+        lights are going out! Load shedding commences at \" ~ ls.commences ~ \" and
+        ends at \" ~ ls.end ~ \". Grab your flashlights and prepare for adventure!\",\n
+        \   \"Bad news, everyone! In \" ~ ls.starts ~ \" minutes, its lights out thanks
+        to everyones favorite pastime: load shedding! The fun begins at \" ~ ls.commences
+        ~ \" and ends at \" ~ ls.end ~ \". Time to bust out the candles and board
+        games!\",\n    \"Well, well, well, look who's back: load shedding! In \" ~
+        ls.starts ~\" minutes, the power's going out. Load shedding kicks off at \"
+        ~ ls.commences ~ \" and wraps up at \" ~ ls.end ~ \". Just when you thought
+        it was safe to turn on your appliances...\",\n    \"Hold onto your butts,
+        folks, because we are in for a bumpy ride! In \" ~ ls.starts ~\" minutes,
+        load shedding is coming to town. It all starts at \" ~ ls.commences ~ \" and
+        ends at \" ~ ls.end ~ \". Don't say we didn't warn you!\",\n    \"Attention,
+        citizens of the world! In \" ~ ls.starts ~\" minutes, the power's taking a
+        nap. Load shedding is happening, and it starts at \" ~ ls.commences ~ \" and
+        ends at \" ~ ls.end ~ \". So sit back, relax, and enjoy the darkness!\"\n]
+        %} {{ message | random }}"
+  mode: single

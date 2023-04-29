@@ -7,6 +7,6 @@ sensors:
   main_geyser_heating:
     friendly_name: "Main Geyser Heating"
     value_template: >-
-      {{ states('sensor.asc_geyser_power')|float > 0 }}
+      {{ states('sensor.main_geyser_power_2')|float > 0 }}
     device_class: heat
     unique_id: heat_mgh

@@ -1,6 +1,0 @@
-platform: workday
-name: schoolnight
-country: ZA
-days_offset: 1
-workdays: [mon, tue, wed, thu, fri]
-excludes: [sat, sun, holiday]

@@ -59,3 +59,9 @@
   - device_id: https_github_com_beyarkay_eskom_calendar_releases_download_latest_city_power_11_ics
     ignore_availability: true
     name: https://github.com/beyarkay/eskom-calendar/releases/download/latest/city-power-11.ics
+
+- cal_id: k13enq29g2onsna4qta5krns74@group.calendar.google.com
+  entities:
+  - device_id: formula_1
+    ignore_availability: true
+    name: Formula 1

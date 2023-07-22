@@ -225,11 +225,14 @@
   - condition: state
     entity_id: binary_sensor.workday_sensor
     state: 'on'
+  - condition: state
+    entity_id: sensor.esp_load_shedding
+    state: 'off'
   action:
   - service: homeassistant.turn_on
     data: {}
     target:
-      entity_id: switch.asc_geyser_switch_1
+      entity_id: switch.main_geyser
   mode: single
 - id: '1650950160995'
   alias: 'Gate: Rudi Remote'
@@ -269,7 +272,7 @@
       old: '{{ trigger.from_state.state }}'
       new: '{{ trigger.to_state.state }}'
       person: '{{ trigger.to_state.name }}'
-  - service: tts.cloud_say
+  - service: tts.google_say
     data:
       entity_id: media_player.bedroom_speaker
       message: "{% if new == \"away\" and old == \"home\"%}\n  {{ person }} left home\n{%
@@ -347,8 +350,8 @@
   action:
   - service: notify.mobile_app_rudi_oppo
     data:
-      message: Load shedding is currently {{ states( 'sensor.load_shedding_stage'
-        ) }}. Load shedding in the West Rand will end soon, hopefully before {{ as_timestamp(state_attr('binary_sensor.kloofendal_loadshedding_esp',
+      message: Load shedding is currently stage {{ states( 'sensor.esp_status' ) }}.
+        Load shedding in the West Rand will end soon, hopefully before {{ as_timestamp(state_attr('binary_sensor.kloofendal_loadshedding_esp',
         'ends')) | timestamp_custom("%H:%M", true) }}.
       title: Load Shedding
   - service: media_player.volume_set
@@ -619,7 +622,6 @@
   trigger:
   - platform: state
     entity_id:
-    - person.rudi_o_kelly
     - person.danika_o_kelly
     - person.tanya_o_kelly
     for:
@@ -998,4 +1000,23 @@
     data:
       message: Event {{ trigger.calendar_event.summary }} @ {{ trigger.calendar_event.start
         }}
+  mode: single
+- id: '1683575802597'
+  alias: Turn on Geyser After Load Shedding
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.kloofendal_loadshedding_esp
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 30
+  condition: []
+  action:
+  - service: homeassistant.turn_on
+    data: {}
+    target:
+      entity_id: switch.main_geyser
   mode: single

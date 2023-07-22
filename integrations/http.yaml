@@ -3,6 +3,8 @@ http:
   trusted_proxies:
     - 192.168.1.0/24 # Add the IP address of the proxy server
     - 172.23.0.0/16
+    - 172.19.0.0/16
+    - 172.18.0.0/16
   # base_url: https://homeassistant.diemeester.local:8123
   # ssl_certificate: /ssl/fullchain.pem
   # ssl_key: /ssl/privkey.pem

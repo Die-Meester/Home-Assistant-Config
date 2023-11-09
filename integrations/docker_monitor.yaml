@@ -1,22 +1,22 @@
 monitor_docker:
   - name: Docker
-    containers:
-      - adguardhome
-      - sonarr
-      - radarr
-      - jackett
-      - lazylibrarian
-      - lidarr
-      - transmission
-      - frigate
-      - homeassistant
-      - portainer
-      - uptime-kuma
-      - unifi-controller
-      - heimdall
-      - webtop
-      - nginxproxymanager
-      - cloudflare-ddns
+    # containers:
+    #   - adguardhome
+    #   - sonarr
+    #   - radarr
+    #   - jackett
+    #   - lazylibrarian
+    #   - lidarr
+    #   - transmission
+    #   - frigate
+    #   - homeassistant
+    #   - portainer
+    #   - uptime-kuma
+    #   - unifi-controller
+    #   - heimdall
+    #   - webtop
+    #   - nginxproxymanager
+    #   - cloudflare-ddns
     rename:
       adguardhome: "Adguard Home"
       sonarr: "Sonarr"
@@ -35,14 +35,15 @@ monitor_docker:
       nginxproxymanager: "Nginx Proxy Manager"
       cloudflare-ddns: "Cloudflare DDNS"
     monitored_conditions:
-      - version
-      - containers_running
-      - containers_total
-      - containers_stopped
-      - containers_paused
-      - state
-      - status
-      - memory
-      - containers_1cpu_percentage
       - 1cpu_percentage
       - allinone
+      - containers_1cpu_percentage
+      - containers_paused
+      - containers_running
+      - containers_stopped
+      - containers_total
+      - memory
+      - state
+      - status
+      - uptime
+      - version

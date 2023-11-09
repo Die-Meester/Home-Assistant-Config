@@ -7,6 +7,6 @@ sensors:
   kitchen_geyser_heating:
     friendly_name: "Kitchen Geyser Heating"
     value_template: >-
-      {{ states('sensor.kitchen_geyser_power')|float(0) > 0}}
+      {{ states('sensor.outside_building_kitchen_geyser_power')|float(0) > 0}}
     device_class: heat
     unique_id: heat_kgh

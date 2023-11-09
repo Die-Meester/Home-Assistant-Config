@@ -18,7 +18,7 @@ sensors:
     friendly_name: "Sunlight Percent"
     value_template: >-
       {%- set elevation = state_attr('sun.sun','elevation') | float(0) %}
-      {%- set cloud_coverage = states('sensor.dark_sky_cloud_coverage') | float(0) %}
+      {%- set cloud_coverage = states('sensor.die_huis_cloud_cover') | float(0) %}
       {%- set cloud_factor = (1 - (0.75 * ( cloud_coverage / 100) ** 3 )) %}
       {%- set min_elevation = -6 %}
       {%- set max_elevation = 90 %}

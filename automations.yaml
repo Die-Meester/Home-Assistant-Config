@@ -324,6 +324,12 @@
         "startsin")) }} min
   - service: script.load_shedding_warning
     data: {}
+  - service: notify.rudi_okelly_gmail_com
+    data:
+      target: rudi.okelly@absa.africa
+      title: Load Shedding
+      message: Load Shedding starts in {{ (state_attr("binary_sensor.kloofendal_loadshedding_esp",
+        "startsin")) }} min
   mode: single
 - id: '1657211274652'
   alias: Load Shedding (Ending)

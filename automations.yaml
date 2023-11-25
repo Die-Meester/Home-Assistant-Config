@@ -119,7 +119,7 @@
       message: Kinders se Internet is af.
   mode: single
 - id: '1650803958450'
-  alias: 'Garage Door: Rudi Garage'
+  alias: 'Garage Door: Tanya Garage'
   description: ''
   trigger:
   - platform: state
@@ -130,11 +130,7 @@
   - service: cover.open_cover
     data: {}
     target:
-      entity_id: cover.garage_door
-  - service: light.toggle
-    data: {}
-    target:
-      entity_id: light.garage_light
+      entity_id: cover.left_garage
   mode: single
 - id: '1650804055342'
   alias: 'Garage Light: Turn Off after 15 Minutes'
@@ -477,8 +473,8 @@
   - service: homeassistant.turn_off
     target:
       entity_id:
-      - switch.kitchen_geyser
       - switch.main_geyser
+      - switch.outside_building_kitchen_geyser
     data: {}
   mode: single
 - id: '1657274855875'
@@ -1026,3 +1022,35 @@
     target:
       entity_id: switch.main_geyser
   mode: single
+- id: '1700752104412'
+  alias: Control Swimming Pool Pump
+  description: Run the pool pump for x number of hours a day.
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.kloofendal_loadshedding_esp
+  - platform: time_pattern
+    minutes: /5
+  action:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: binary_sensor.kloofendal_loadshedding_esp
+        state: 'off'
+      - condition: template
+        value_template: '{{ states(''sensor.daily_pool_pump_runtime'') | float < states(''input_number.swimming_pool_pump_runtime'')
+          | float }}'
+      sequence:
+      - service: switch.turn_on
+        entity_id: switch.swimming_pool_swimming_pool
+    - conditions:
+      - condition: state
+        entity_id: binary_sensor.kloofendal_loadshedding_esp
+        state: 'on'
+      sequence:
+      - service: switch.turn_off
+        entity_id: switch.swimming_pool_swimming_pool
+  - condition: template
+    value_template: '{{ states(''sensor.daily_pool_pump_runtime'') | float >= states(''input_number.swimming_pool_pump_runtime'')
+      | float }}'
+  - service: switch.turn_off
+    entity_id: switch.swimming_pool_swimming_pool

@@ -1,0 +1,5 @@
+platform: integration
+source: sensor.swimming_pool_energy_power
+name: Swimming Pool Usage
+unit_prefix: k
+round: 2

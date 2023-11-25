@@ -1,0 +1,6 @@
+sensor:
+  - name: "Formatted Pool Pump Runtime"
+    unique_id: 20231123-f3fc-4b99-bff1-288968c38b80
+    state: >-
+      {% set format_hour = states('input_number.swimming_pool_pump_runtime') | float * 3600 %} 
+      {{ format_hour | timestamp_custom('%H:%M:%S', false) }}

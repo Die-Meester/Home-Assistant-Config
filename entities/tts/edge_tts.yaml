@@ -1,0 +1,4 @@
+platform: edge_tts
+service_name: edge_praat # service: tts.xiaomo_say
+language: af-ZA-AdriNeural
+volume: +10%

@@ -615,8 +615,8 @@
     data: {}
     target:
       entity_id:
-      - switch.asc_geyser_switch_1
-      - switch.outside_building_and_geyser_switch_1
+      - switch.main_geyser
+      - switch.outside_building_kitchen_geyser
   mode: single
 - id: '1661540889751'
   alias: Notify when someone enters or leaves a zone

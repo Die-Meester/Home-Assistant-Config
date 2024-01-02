@@ -125,6 +125,10 @@
   - platform: state
     entity_id: binary_sensor.remote_1_button_b
     to: 'on'
+  - platform: state
+    entity_id:
+    - binary_sensor.remote_3_button_b
+    to: 'on'
   condition: []
   action:
   - service: cover.open_cover
@@ -236,6 +240,10 @@
   trigger:
   - platform: state
     entity_id: binary_sensor.remote_1_button_a
+    to: 'on'
+  - platform: state
+    entity_id:
+    - binary_sensor.remote_3_button_a
     to: 'on'
   condition: []
   action:
@@ -1033,9 +1041,14 @@
   action:
   - choose:
     - conditions:
-      - condition: state
-        entity_id: binary_sensor.kloofendal_loadshedding_esp
-        state: 'off'
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: binary_sensor.kloofendal_loadshedding_esp
+          state: 'off'
+        - condition: state
+          entity_id: binary_sensor.kloofendal_loadshedding_esp
+          state: unavailable
       - condition: template
         value_template: '{{ states(''sensor.daily_pool_pump_runtime'') | float < states(''input_number.swimming_pool_pump_runtime'')
           | float }}'
@@ -1054,3 +1067,30 @@
       | float }}'
   - service: switch.turn_off
     entity_id: switch.swimming_pool_swimming_pool
+- id: '1703159316180'
+  alias: Gate Bell Button
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.gate_bell_button
+    to: 'on'
+  condition: []
+  action:
+  - service: chime_tts.say
+    target:
+      entity_id:
+      - media_player.bedroom_speaker
+    data:
+      tts_platform: edge_tts
+      message: Iemand druk die donnerse knoppie by die hek. Julle sal maar moet kyk
+        of julle wil oopmaak.
+      chime_path: whistle
+      end_chime_path: bells
+      volume_level: 1
+      announce: true
+  - service: notify.mobile_app_rudi_oppo
+    data:
+      title: Gate Bell
+      message: Someone is at the gate.
+  mode: single

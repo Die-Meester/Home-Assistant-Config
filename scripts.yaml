@@ -71,3 +71,27 @@ load_shedding_warning:
         ends at \" ~ ls.end ~ \". So sit back, relax, and enjoy the darkness!\"\n]
         %} {{ message | random }}"
   mode: single
+'1703693171590':
+  alias: Running Lights Effect with Variables
+  variables:
+    light_list:
+    - light.sonoff_1000fccab0
+    - light.sonoff_1000fcc1df
+    - light.sonoff_1000f19427
+    - light.sonoff_1000fcb60e
+    delay_time: 00:00:01
+  sequence:
+  - repeat:
+      count: 5
+      sequence:
+      - repeat:
+          count: '{{ light_list | count }}'
+          sequence:
+          - service: light.turn_on
+            target:
+              entity_id: '{{ light_list[repeat.index - 1] }}'
+          - delay: '{{ delay_time }}'
+          - service: light.turn_off
+            target:
+              entity_id: '{{ light_list[repeat.index - 1] }}'
+  mode: single

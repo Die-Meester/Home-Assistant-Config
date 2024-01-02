@@ -56,3 +56,31 @@ mqtt:
     - name: "Gate Button"
       state_topic: "home/button"
       off_delay: 2
+    - name: "Remote 3 Button A"
+      state_topic: "home/remote_3_a"
+      icon: mdi:remote
+      off_delay: 2
+    - name: "Remote 3 Button B"
+      state_topic: "home/remote_3_b"
+      icon: mdi:remote
+      off_delay: 2
+    - name: "Gate Bell Button"
+      state_topic: "home/gate_button"
+      icon: mdi:bell-ring
+      off_delay: 2
+    - name: "Remote 2 Button A"
+      state_topic: "home/remote_2_a"
+      icon: mdi:remote
+      off_delay: 2
+    - name: "Remote 2 Button B"
+      state_topic: "home/remote_2_b"
+      icon: mdi:remote
+      off_delay: 2
+    - name: "Remote 2 Button C"
+      state_topic: "home/remote_2_c"
+      icon: mdi:remote
+      off_delay: 2
+    - name: "Remote 2 Button D"
+      state_topic: "home/remote_2_d"
+      icon: mdi:remote
+      off_delay: 2

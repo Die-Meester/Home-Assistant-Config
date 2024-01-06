@@ -1094,3 +1094,45 @@
       title: Gate Bell
       message: Someone is at the gate.
   mode: single
+- id: '1704390773222'
+  alias: Announce when service is down
+  description: Announce when Service is down
+  trigger:
+  - platform: event
+    event_type: call_service
+    event_data:
+      domain: notify
+      service: mobile_app_rudi_oppo
+  condition:
+  - condition: template
+    value_template: '{{ trigger.event.data.service_data.data.status == 0 }}'
+  - condition: time
+    after: 08:00:00
+    before: '20:00:00'
+  - condition: time
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+  - condition: state
+    entity_id: person.rudi_o_kelly
+    state: home
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  action:
+  - service: chime_tts.say
+    data:
+      chime_path: bells
+      end_chime_path: bells
+      delay: 450
+      final_delay: 200
+      tts_platform: google_translate
+      cache: false
+      announce: true
+      message: '{{ trigger.event.data.service_data.data.name }} is down.'
+    target:
+      entity_id: media_player.bedroom_speaker

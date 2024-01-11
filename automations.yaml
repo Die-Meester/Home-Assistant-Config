@@ -1136,3 +1136,14 @@
       message: '{{ trigger.event.data.service_data.data.name }} is down.'
     target:
       entity_id: media_player.bedroom_speaker
+- id: '1704569555680'
+  alias: Camera Notification Swimming Pool
+  description: ''
+  use_blueprint:
+    path: SgtBatten/Stable.yaml
+    input:
+      camera: camera.swimmingpool
+      notify_device: 5de724ba17899d151837e1e7822fa464
+      critical: 'true'
+      update_thumbnail: true
+      color: indigo

@@ -1,0 +1,5 @@
+sensor:
+  - name: Next Load Shedding
+    unique_id: 3b7392de-728d-40fc-a3c9-bf47324ae4d0
+    state: >-
+      {{ state_attr("binary_sensor.kloofendal_loadshedding_esp",  "starts") }}

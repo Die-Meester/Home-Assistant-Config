@@ -1,5 +1,5 @@
 platform: integration
-source: sensor.outside_building_and_geyser_power
+source: sensor.outside_building_kitchen_geyser_power
 name: Kitchen Geyser Usage
 unit_prefix: k
 round: 2

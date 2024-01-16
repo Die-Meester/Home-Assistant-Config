@@ -76,8 +76,8 @@
         data: {}
         target:
           entity_id:
-          - light.backyard
           - light.braai
+          - light.backyard_2
       - service: notify.diemeesterha
         data:
           title: Lights
@@ -90,8 +90,8 @@
         data: {}
         target:
           entity_id:
-          - light.backyard
           - light.braai
+          - light.backyard_2
       - service: notify.mobile_app_rudi_oppo
         data:
           message: Outside Lights were turned off.
@@ -163,6 +163,10 @@
     entity_id:
     - binary_sensor.2ch_switch_1
     to: 'on'
+  - platform: state
+    entity_id:
+    - binary_sensor.remote_2_button_d
+    to: 'on'
   condition: []
   action:
   - service: light.toggle
@@ -171,7 +175,6 @@
     target:
       entity_id:
       - light.bedroom_lights
-      - light.bedroom
   mode: single
 - id: '1650804867592'
   alias: Announce when Tanya Leaves Ouma
@@ -574,7 +577,7 @@
   description: ''
   trigger:
   - platform: time
-    at: 07:00:00
+    at: 08:00:00
   condition:
   - condition: state
     entity_id: binary_sensor.workday_sensor
@@ -583,24 +586,8 @@
   - service: homeassistant.turn_on
     data: {}
     target:
-      entity_id: switch.asc_geyser_switch_1
-  mode: single
-- id: '1660249303299'
-  alias: 'Geyser: Turn on Bar Geyser Tuesday''s & Friday''s'
-  description: ''
-  trigger:
-  - platform: time
-    at: 07:30:00
-  condition:
-  - condition: time
-    weekday:
-    - tue
-    - fri
-  action:
-  - service: homeassistant.turn_on
-    data: {}
-    target:
-      entity_id: switch.outside_building_and_geyser_switch_1
+      entity_id:
+      - switch.main_geyser
   mode: single
 - id: '1660250439702'
   alias: Turn Geysers Off At Lights Out
@@ -608,7 +595,7 @@
   trigger:
   - platform: state
     entity_id:
-    - light.bedroom
+    - switch.bedroom_ws
     to: 'off'
     for:
       hours: 0
@@ -900,8 +887,6 @@
   action:
   - service: light.toggle
     data: {}
-    target:
-      entity_id: light.danika_room
   mode: single
 - id: '1670174021966'
   alias: Motion | Lounge
@@ -913,7 +898,6 @@
       light_target:
         entity_id:
         - light.lounge
-        - light.diningroom
 - id: '1670222598477'
   alias: Motion | Foyer | Manual
   description: Manual Foyer
@@ -1147,3 +1131,22 @@
       critical: 'true'
       update_thumbnail: true
       color: indigo
+- id: '1705224158608'
+  alias: Update Schedule after Load Shedding
+  description: Automation to update load schedule after load shedding ends.
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.kloofendal_loadshedding_esp
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  condition: []
+  action:
+  - service: homeassistant.update_entity
+    target:
+      entity_id: sensor.esp_load_shedding
+    data: {}
+  mode: single

@@ -737,8 +737,6 @@
     target:
       entity_id:
       - switch.docker_sonarr
-      - switch.docker_radarr
-      - switch.docker_transmission
   - service: homeassistant.turn_off
     data: {}
     target:
@@ -961,9 +959,6 @@
   action:
   - service: homeassistant.turn_on
     data: {}
-    target:
-      entity_id:
-      - switch.docker_transmission
   - delay:
       hours: 0
       minutes: 5
@@ -974,7 +969,6 @@
     target:
       entity_id:
       - switch.docker_sonarr
-      - switch.docker_radarr
   mode: single
 - id: '1675688633101'
   alias: Calendar Notification
@@ -1149,4 +1143,19 @@
     target:
       entity_id: sensor.esp_load_shedding
     data: {}
+  mode: single
+- id: '1705499462094'
+  alias: Collect Danika
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_button.pickup
+  condition: []
+  action:
+  - service: notify.mobile_app_rudi_oppo
+    metadata: {}
+    data:
+      title: Danika is Ready
+      message: Pick up Danika
   mode: single

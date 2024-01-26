@@ -1,5 +1,6 @@
 platform: rest
-resource: http://192.168.1.14:8989/api/calendar?apikey=9d5f7f1d90c84655a6292294dca4a875
+# resource: http://192.168.1.14:8989/api/v3/calendar?apikey=9d5f7f1d90c84655a6292294dca4a875&stat&unmonitored=false&includeSeries=true&includeEpisodeFile=true&includeEpisodeImages=true'
+resource_template: http://192.168.1.14:8989/api/v3/calendar?apikey=9d5f7f1d90c84655a6292294dca4a875&start={{ now().strftime('%Y-%m-%d') }}&end={{ (now() + timedelta(days = 7)).strftime('%Y-%m-%d') }}&unmonitored=false&includeSeries=true&includeEpisodeFile=true&includeEpisodeImages=true'
 name: Sonarr Series
 value_template: "{{ value_json | length }}"
 json_attributes_path: "$."

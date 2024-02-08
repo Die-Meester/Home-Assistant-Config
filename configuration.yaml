@@ -8,8 +8,8 @@ homeassistant:
   longitude: !secret home_longitude
   elevation: !secret home_elevation
   unit_system: metric
-  # internal_url: !secret local_url
-  # external_url: !secret public_url
+  internal_url: !secret local_url
+  external_url: !secret public_url
   customize: !include customize.yaml
   packages: !include_dir_named integrations
   country: ZA

@@ -44,9 +44,25 @@ new_script:
 load_shedding_warning:
   alias: Load Shedding Warning
   sequence:
-  - service: tts.google_cloud_say
+  - service: tts.edge_praat
     data:
       cache: true
+      language: "{% set language = [\"en-AU-NatashaNeural\",\n    \"en-AU-WilliamNeural\",\n
+        \   \"en-CA-ClaraNeural\",\n    \"en-CA-LiamNeural\",\n    \"en-GB-LibbyNeural\",\n
+        \   \"en-GB-MaisieNeural\",\n    \"en-GB-RyanNeural\",\n    \"en-GB-SoniaNeural\",\n
+        \   \"en-GB-ThomasNeural\",\n    \"en-HK-SamNeural\",\n    \"en-HK-YanNeural\",\n
+        \   \"en-IE-ConnorNeural\",\n    \"en-IE-EmilyNeural\",\n    \"en-IN-NeerjaExpressiveNeural\",\n
+        \   \"en-IN-NeerjaNeural\",\n    \"en-IN-PrabhatNeural\",\n    \"en-KE-AsiliaNeural\",\n
+        \   \"en-KE-ChilembaNeural\",\n    \"en-NG-AbeoNeural\",\n    \"en-NG-EzinneNeural\",\n
+        \   \"en-NZ-MitchellNeural\",\n    \"en-NZ-MollyNeural\",\n    \"en-PH-JamesNeural\",\n
+        \   \"en-PH-RosaNeural\",\n    \"en-SG-LunaNeural\",\n    \"en-SG-WayneNeural\",\n
+        \   \"en-TZ-ElimuNeural\",\n    \"en-TZ-ImaniNeural\",\n    \"en-US-AnaNeural\",\n
+        \   \"en-US-AndrewNeural\",\n    \"en-US-AriaNeural\",\n    \"en-US-AvaNeural\",\n
+        \   \"en-US-BrianNeural\",\n    \"en-US-ChristopherNeural\",\n    \"en-US-EmmaNeural\",\n
+        \   \"en-US-EricNeural\",\n    \"en-US-GuyNeural\",\n    \"en-US-JennyNeural\",\n
+        \   \"en-US-MichelleNeural\",\n    \"en-US-RogerNeural\",\n    \"en-US-SteffanNeural\",\n
+        \   \"en-ZA-LeahNeural\",\n    \"en-ZA-LukeNeural\"] %} {{ language | random
+        }}"
       entity_id: media_player.assistant_speakers
       message: "{% set ls = {\n    \"starts\": state_attr(\"binary_sensor.kloofendal_loadshedding_esp\",
         \"startsin\"),\n    \"commences\": as_timestamp(state_attr(\"binary_sensor.kloofendal_loadshedding_esp\",
@@ -94,4 +110,41 @@ load_shedding_warning:
           - service: light.turn_off
             target:
               entity_id: '{{ light_list[repeat.index - 1] }}'
+  mode: single
+load_shedding_ending:
+  alias: Load Shedding Ending
+  sequence:
+  - service: tts.edge_praat
+    data:
+      cache: true
+      language: "{% set language = [\"af-ZA-AdriNeural\",\n  \"af-ZA-WillemNeural\"]
+        %} {{ language | random }}"
+      entity_id: media_player.assistant_speakers
+      message: "{% set ls = {\n    \"stage\": states( \"sensor.esp_status\" ) ,\n
+        \   \"end\": as_timestamp(state_attr(\"binary_sensor.kloofendal_loadshedding_esp\",
+        \"ends\")) | timestamp_custom(\"%I:%M %p\", true)\n    } %}\n{% set message
+        =  [\n    \"Beurtkrag is tans fase \" ~ ls.stage ~ \". Die munsipale krag
+        sal weer aangaan as Eskom se kersies uitbrand.\",\n    \"Beurtkrag is tans
+        fase \" ~ ls.stage ~ \". Die munsipale krag sal terugkeer as die son sak,
+        want dan kan ons die sterre gebruik om ons ligte aan te steek.\",\n    \"Beurtkrag
+        is tans fase \" ~ ls.stage ~ \". Die munsipale krag sal weer aangaan as die
+        president sy toespraak klaarmaak, want hy het al die krag nodig om sy teleprompter
+        te laat werk.\",\n    \"Beurtkrag is tans fase \" ~ ls.stage ~ \". Die munsipale
+        krag sal weer aangaan as die Springbokke wen, want dan sal ons almal saam
+        juig en genoeg energie opwek.\",\n    \"Beurtkrag is tans fase \" ~ ls.stage
+        ~ \". Die munsipale krag sal weer aangaan as die lotto-trekking klaar is,
+        want dan sal ons almal ryk wees en ons eie kragopwekkers kan koop.\",\n    \"Beurtkrag
+        is tans fase \" ~ ls.stage ~ \". Die munsipale krag sal weer aangaan as die
+        verkeer ophou, want dan sal ons almal by die huis wees en ons eie krag kan
+        gebruik.\",\n    \"Beurtkrag is tans fase \" ~ ls.stage ~ \". Die munsipale
+        krag sal weer aangaan as die reën ophou, want dan sal ons almal ons dakgotte
+        kan gebruik om waterwiele te maak en krag te genereer.\",\n    \"Beurtkrag
+        is tans fase \" ~ ls.stage ~ \". Die munsipale krag sal weer aangaan as die
+        wind waai, want dan sal ons almal ons waaiers kan gebruik om windkrag te skep.\",\n
+        \   \"Beurtkrag is tans fase \" ~ ls.stage ~ \". Die munsipale krag sal weer
+        aangaan as die kinders gaan slaap, want dan sal ons almal ons selfone kan
+        gebruik om krag te spaar.\",\n    \"Beurtkrag is tans fase \" ~ ls.stage ~
+        \". Die munsipale krag sal weer aangaan as die koekepanne afkoel, want dan
+        sal ons almal ons eiers kan bak en krag kan eet.\"\n] %} {{ message | random
+        }}"
   mode: single

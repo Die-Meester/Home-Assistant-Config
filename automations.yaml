@@ -377,22 +377,6 @@
       volume_level: 0.7
     target:
       entity_id: media_player.kitchen_speaker
-  - service: tts.google_say
-    data:
-      entity_id: media_player.assistant_speakers
-      message: "Beurtkrag is tans fase {{ states( 'sensor.esp_status' ) }}. Die munsipale
-        krag behoort binnekort weer aan kom, hopelik voor {{\nas_timestamp(state_attr('binary_sensor.kloofendal_loadshedding_esp',\n'ends'))
-        | timestamp_custom(\"%H:%M\", true) }}.    \n"
-      language: af
-      cache: true
-  - service: tts.google_say
-    data:
-      entity_id: media_player.kitchen_speaker
-      message: Load shedding is currently stage {{ states( 'sensor.esp_status' ) }}.
-        Load shedding will end soon, hopefully before {{ as_timestamp(state_attr('binary_sensor.kloofendal_loadshedding_esp',
-        'ends')) | timestamp_custom("%I:%M %p", true) }}.
-      cache: true
-    enabled: true
   - service: notify.mobile_app_rudi_oppo
     data:
       message: TTS
@@ -403,6 +387,9 @@
         tts_text: Load shedding will end soon, hopefully before {{ as_timestamp(state_attr('binary_sensor.kloofendal_loadshedding_esp',
           'ends')) | timestamp_custom("%I:%M %p", true) }}.
     enabled: false
+  - service: script.load_shedding_ending
+    metadata: {}
+    data: {}
   mode: single
 - id: '1657218088006'
   alias: Load Shedding (Stage)

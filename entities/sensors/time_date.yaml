@@ -7,4 +7,4 @@ display_options:
   - "date_time_iso"
   - "time_date"
   - "time_utc"
-  - "beat"
+#  - "beat" Removed 2024.2 release

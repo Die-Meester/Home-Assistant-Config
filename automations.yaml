@@ -509,16 +509,6 @@
       minutes: 5
       seconds: 0
     to: 'off'
-  condition:
-  - condition: device
-    type: is_on
-    device_id: f19ca649dbe031c8f91a20868bd09e30
-    entity_id: switch.asc_geyser_switch_1
-    domain: switch
-    for:
-      hours: 0
-      minutes: 5
-      seconds: 0
   action:
   - service: notify.mobile_app_rudi_oppo
     data:
@@ -582,7 +572,7 @@
   trigger:
   - platform: state
     entity_id:
-    - switch.bedroom_ws
+    - light.bedroom
     to: 'off'
     for:
       hours: 0
@@ -770,7 +760,7 @@
     to: 'on'
   condition:
   - condition: state
-    entity_id: switch.bedroom_ws
+    entity_id: light.bedroom
     state: 'on'
     for:
       hours: 0
@@ -1146,3 +1136,73 @@
       title: Danika is Ready
       message: Pick up Danika
   mode: single
+- id: '1713032398745'
+  alias: Turn on Driveway Light for Person
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.driveway_yard_person_occupancy
+    - binary_sensor.driveway_yard_car_occupancy
+    - binary_sensor.front_garden_person_occupancy
+    - binary_sensor.front_garden_car_occupancy
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+  condition:
+  - condition: state
+    entity_id: sun.sun
+    state: below_horizon
+  action:
+  - service: light.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: light.driveway
+  - delay:
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
+  - service: light.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: light.driveway
+  mode: restart
+- id: '1713033726008'
+  alias: Gate Motion
+  description: Turns on the Driveway light on Motion detected.
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.driveway_street_all_occupancy
+    - binary_sensor.driveway_yard_all_occupancy
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 3
+  condition:
+  - condition: state
+    entity_id: sun.sun
+    state: below_horizon
+  action:
+  - service: light.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: light.gate
+  - delay:
+      hours: 0
+      minutes: 10
+      seconds: 0
+      milliseconds: 0
+  - service: light.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: light.gate
+  mode: restart

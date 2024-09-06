@@ -709,19 +709,14 @@
       entity_id: switch.nas
       state: 'on'
   action:
-  - service: homeassistant.turn_off
-    data: {}
-    target:
-      entity_id:
-      - switch.docker_sonarr
-  - service: homeassistant.turn_off
-    data: {}
+  - data: {}
     target:
       entity_id: switch.nas
-  - service: telegram_bot.send_message
-    data:
+    action: homeassistant.turn_off
+  - data:
       title: NAS
       message: Nas are going down for loadshedding
+    action: telegram_bot.send_message
   mode: single
 - id: '1663705047619'
   alias: Turn On NAS after Load Shedding at Night
@@ -919,33 +914,6 @@
   trigger: []
   condition: []
   action: []
-  mode: single
-- id: '1674627123653'
-  alias: Turn on Docker containers
-  description: Check Plex state is not available and turn on Docker containers.
-  trigger:
-  - platform: state
-    entity_id:
-    - sensor.plex_recently_added
-    for:
-      hours: 0
-      minutes: 1
-      seconds: 0
-    to: Online
-  condition: []
-  action:
-  - service: homeassistant.turn_on
-    data: {}
-  - delay:
-      hours: 0
-      minutes: 5
-      seconds: 0
-      milliseconds: 0
-  - service: homeassistant.turn_on
-    data: {}
-    target:
-      entity_id:
-      - switch.docker_sonarr
   mode: single
 - id: '1675688633101'
   alias: Calendar Notification

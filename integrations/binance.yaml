@@ -1,0 +1,13 @@
+binance:
+  api_key: !secret binance_api_key
+  api_secret: !secret binance_api_secret
+  domain: com
+  native_currency: ZAR
+  balances:
+    - XRP
+    - USDT
+    - POND
+  exchanges:
+    - USDTZAR
+    - PONDUSDT
+    - XRPUSDT

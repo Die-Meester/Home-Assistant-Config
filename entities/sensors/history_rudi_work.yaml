@@ -1,0 +1,7 @@
+platform: history_stats
+name: Work
+entity_id: device_tracker.rudi_s24  # Replace with your device tracker
+state: "Absa Sandton"  # Replace with your zone name
+type: time
+start: "{{ now().replace(day=1).replace(hour=0, minute=0, second=0) }}"
+end: "{{ now() }}"

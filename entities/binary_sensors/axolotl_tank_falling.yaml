@@ -6,7 +6,7 @@
 platform: trend
 sensors:
   axolotl_temp_falling:
-    entity_id: sensor.axolotl_tank_ds18b20_temperature
+    entity_id: sensor.axolotl_tank_temperature
 #    sample_duration: 1200
 #    max_samples: 120
     min_gradient: -0.0008

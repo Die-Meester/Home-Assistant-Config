@@ -1,31 +1,3 @@
-- id: '1650023017986'
-  alias: Frigate Back Yard Notification
-  description: ''
-  use_blueprint:
-    path: hunterjm/frigate_notification.yaml
-    input:
-      camera: backyard
-      notify_device: 5de724ba17899d151837e1e7822fa464
-      base_url: https://homeassistant.diemeester.co.za
-      labels:
-      - person
-      presence_filter: person.rudi_o_kelly
-      cooldown: 60
-      silence_timer: 30
-- id: '1650024016617'
-  alias: Frigate Front Yard Notification
-  description: ''
-  use_blueprint:
-    path: hunterjm/frigate_notification.yaml
-    input:
-      notify_device: 5de724ba17899d151837e1e7822fa464
-      base_url: https://homeassistant.diemeester.co.za
-      presence_filter: person.rudi_o_kelly
-      cooldown: 60
-      silence_timer: 30
-      labels:
-      - person
-      camera: driveway
 - id: '1650381153974'
   alias: Notify When Tanya Leave Ouma
   description: ''
@@ -34,89 +6,89 @@
     input:
       person_entity: person.tanya_o_kelly
       zone_entity: zone.ouma_charmaine
-      notify_device: 5de724ba17899d151837e1e7822fa464
+      notify_device: 74b3998c2198fea965280a80ed0dfa08
 - id: '1635704484044'
   alias: Turn Off Fish Tank Light at 23:00
   description: ''
-  trigger:
-  - platform: time
-    at: '23:00:00'
-  condition: []
-  action:
-  - service: light.turn_off
-    data: {}
+  triggers:
+  - at: '23:00:00'
+    trigger: time
+  conditions: []
+  actions:
+  - data: {}
     target:
       entity_id: light.fish_tanks_lights
-  - service: notify.html_browser
+    action: light.turn_off
+  - action: notify.html5
     data:
-      message: Fish Tank Lights have been switched off.
+      message: Fish Tank Lights Switched Off
   mode: single
 - id: '1650803161063'
   alias: 'Outside Lights: turn on and off based on elevation'
   description: ''
-  trigger:
-  - platform: numeric_state
-    entity_id: sun.sun
+  triggers:
+  - entity_id: sun.sun
     attribute: elevation
     below: '-6'
     id: turn_lights_on
-  - platform: numeric_state
-    entity_id: sun.sun
+    trigger: numeric_state
+  - entity_id: sun.sun
     attribute: elevation
     above: '-6'
     id: turn_lights_off
-  condition: []
-  action:
+    trigger: numeric_state
+  conditions: []
+  actions:
   - choose:
     - conditions:
       - condition: trigger
         id: turn_lights_on
       sequence:
-      - service: light.turn_on
-        data: {}
+      - data: {}
         target:
           entity_id:
-          - light.braai
+          - light.patio
           - light.backyard_2
-      - service: notify.diemeesterha
-        data:
+        action: light.turn_on
+      - data:
           title: Lights
           message: Lights Turned On
+        action: notify.diemeesterha
     - conditions:
       - condition: trigger
         id: turn_lights_off
       sequence:
-      - service: light.turn_off
-        data: {}
+      - data: {}
         target:
           entity_id:
-          - light.braai
           - light.backyard_2
-      - service: notify.mobile_app_rudi_oppo
-        data:
+          - light.patio
+        action: light.turn_off
+      - data:
           message: Outside Lights were turned off.
+        action: notify.mobile_app_rudi_s24
     default: []
   mode: single
 - id: '1641927371719'
   alias: Turn off Kids Computers on school nights
   description: ''
-  trigger:
-  - platform: time
-    at: input_datetime.computers_off
-  condition:
+  triggers:
+  - at: input_datetime.computers_off
+    trigger: time
+  conditions:
   - condition: state
     entity_id: binary_sensor.schoolnight
     state: 'on'
-  action:
-  - service: homeassistant.turn_off
-    target:
+  actions:
+  - target:
       entity_id:
-      - switch.kayden_pc
       - switch.danika_laptop
+      - switch.kayden_pc_wired
     data: {}
-  - service: notify.diemeesterha
-    data:
+    action: homeassistant.turn_off
+  - data:
       message: Kinders se Internet is af.
+    action: notify.diemeesterha
   mode: single
 - id: '1650803958450'
   alias: 'Garage Door: Tanya Garage'
@@ -290,53 +262,53 @@
 - id: '1657208687283'
   alias: Load Shedding (Warning)
   description: ''
-  trigger:
-  - platform: template
-    value_template: '{{ timedelta(minutes=(state_attr("binary_sensor.kloofendal_loadshedding_esp",
+  triggers:
+  - value_template: '{{ timedelta(minutes=(state_attr("binary_sensor.kloofendal_loadshedding_esp",
       "startsin"))) == timedelta(minutes=15) }}'
     alias: Loadshedding 15 minutes
-  - platform: template
-    value_template: '{{ timedelta(minutes=(state_attr("binary_sensor.kloofendal_loadshedding_esp",
+    trigger: template
+  - value_template: '{{ timedelta(minutes=(state_attr("binary_sensor.kloofendal_loadshedding_esp",
       "startsin"))) == timedelta(minutes=30) }}'
     alias: Loadshedding 30 minutes
-  condition:
+    trigger: template
+  conditions:
   - condition: time
     before: input_datetime.sleep
     after: input_datetime.wake
-  action:
-  - service: notify.mobile_app_rudi_oppo
-    data:
+  actions:
+  - data:
       message: Load Shedding
       title: Load Shedding starts in {{     (state_attr("binary_sensor.kloofendal_loadshedding_esp",
         "startsin")) }} min
-  - service: media_player.volume_set
-    data:
+    action: notify.mobile_app_rudi_s24
+  - data:
       volume_level: 0.7
     target:
       entity_id: media_player.bedroom_speaker
-  - service: media_player.volume_set
-    data:
+    action: media_player.volume_set
+  - data:
       volume_level: 0.7
     target:
       entity_id: media_player.kitchen_speaker
-  - service: notify.mobile_app_tanya_oppo
-    data:
+    action: media_player.volume_set
+  - data:
       message: Load Shedding
       title: Load Shedding starts in {{     (state_attr("binary_sensor.kloofendal_loadshedding_esp",
         "startsin")) }} min
-  - service: notify.html_browser
-    data:
+    action: notify.mobile_app_tanya_oppo
+  - data:
       message: Load Shedding
       title: Load Shedding starts in {{     (state_attr("binary_sensor.kloofendal_loadshedding_esp",
         "startsin")) }} min
-  - service: script.load_shedding_warning
-    data: {}
-  - service: notify.rudi_okelly_gmail_com
-    data:
+    action: notify.html5
+  - data: {}
+    action: script.load_shedding_warning
+  - data:
       target: rudi.okelly@absa.africa
       title: Load Shedding
       message: Load Shedding starts in {{ (state_attr("binary_sensor.kloofendal_loadshedding_esp",
         "startsin")) }} min
+    action: notify.rudi_okelly_gmail_com
   mode: single
 - id: '1657211274652'
   alias: Load Shedding (Ending)
@@ -361,7 +333,7 @@
         state: No Load Shedding
     enabled: true
   action:
-  - service: notify.mobile_app_rudi_oppo
+  - service: notify.mobile_app_rudi_s24
     data:
       message: Load shedding is currently stage {{ states( 'sensor.esp_status' ) }}.
         Load shedding in the West Rand will end soon, hopefully before {{ as_timestamp(state_attr('binary_sensor.kloofendal_loadshedding_esp',
@@ -377,7 +349,7 @@
       volume_level: 0.7
     target:
       entity_id: media_player.kitchen_speaker
-  - service: notify.mobile_app_rudi_oppo
+  - service: notify.mobile_app_rudi_s24
     data:
       message: TTS
       data:
@@ -435,7 +407,7 @@
           at: input_datetime.wake
         continue_on_timeout: false
     default: []
-  - service: notify.mobile_app_rudi_oppo
+  - service: notify.mobile_app_rudi_s24
     data:
       title: Load Shedding
       message: Load Shedding Stage {{ states.sensor.esp_status.state }}
@@ -510,7 +482,7 @@
       seconds: 0
     to: 'off'
   action:
-  - service: notify.mobile_app_rudi_oppo
+  - service: notify.mobile_app_rudi_s24
     data:
       message: Main Geyser Hot
   mode: single
@@ -616,44 +588,43 @@
 - id: '1663523457148'
   alias: Load Shedding (Final Warning)
   description: ''
-  trigger:
-  - platform: template
-    value_template: '{{ timedelta(minutes=(state_attr("binary_sensor.kloofendal_loadshedding_esp",
+  triggers:
+  - value_template: '{{ timedelta(minutes=(state_attr("binary_sensor.kloofendal_loadshedding_esp",
       "startsin"))) == timedelta(minutes=5) }}'
     alias: Loadshedding 5 minutes
-  condition:
+    trigger: template
+  conditions:
   - condition: time
     after: input_datetime.wake
-  action:
-  - service: notify.mobile_app_rudi_oppo
-    data:
+  actions:
+  - data:
       title: Load Shedding
       message: Load Shedding starts in {{     (state_attr("binary_sensor.kloofendal_loadshedding_esp",
         "startsin")) }} min
-  - service: media_player.volume_set
-    data:
+    action: notify.mobile_app_rudi_s24
+  - data:
       volume_level: 0.7
     target:
       entity_id: media_player.bedroom_speaker
-  - service: media_player.volume_set
-    data:
+    action: media_player.volume_set
+  - data:
       volume_level: 0.7
     target:
       entity_id: media_player.kitchen_speaker
-  - service: tts.google_say
-    data:
+    action: media_player.volume_set
+  - data:
       message: This is the final load shedding warning.  In {{ state_attr( "binary_sensor.kloofendal_loadshedding_esp",
         "startsin") }} minutes load shedding will be activated. Power should be restored
         at {{ as_timestamp(state_attr( 'binary_sensor.kloofendal_loadshedding_esp',
         'ends')) | timestamp_custom("%I:%M %p", true) }}.
       entity_id: all
-  - service: notify.mobile_app_tanya_oppo
-    data:
+    action: tts.google_say
+  - data:
       title: Load Shedding
       message: Load Shedding starts in {{     (state_attr("binary_sensor.kloofendal_loadshedding_esp",
         "startsin")) }} min
-  - service: notify.mobile_app_rudi_oppo
-    data:
+    action: notify.mobile_app_tanya_oppo
+  - data:
       message: TTS
       data:
         ttl: 0
@@ -662,38 +633,27 @@
         tts_text: Final Warning Load Shedding starts in {{    (state_attr("binary_sensor.kloofendal_loadshedding_esp",
           "startsin")) }} min, start the generator.
     enabled: false
-  - service: notify.html_browser
-    data:
+    action: notify.mobile_app_rudi_s24
+  - data:
       title: Load Shedding
       message: Load Shedding starts in {{     (state_attr("binary_sensor.kloofendal_loadshedding_esp",
         "startsin")) }} min.
+    action: notify.html5
   mode: single
 - id: '1663699813318'
   alias: Plex - New media added
   description: ''
-  trigger:
-  - platform: state
-    entity_id: sensor.die_meester_plex_library_tv_shows
+  triggers:
+  - entity_id: sensor.die_meester_plex_library_tv_shows
     id: episode
-  action:
-  - service: notify.html_browser
-    data:
+    trigger: state
+  actions:
+  - data:
       message: '{{ state_attr( ''sensor.die_meester_plex_library_tv_shows'', ''last_added_item''
         ) }} got added to {{ state_attr( ''sensor.die_meester_plex_library_tv_shows'',
         ''friendly_name'' ) }}'
       title: Something to Watch
-  - service: notify.diemeesterha
-    data:
-      title: New Episode Added
-      message: '{{ state_attr( ''sensor.die_meester_plex_library_tv_shows'', ''last_added_item''
-        )}} was added to {{ state_attr( ''sensor.die_meester_plex_library_tv_shows'',
-        ''friendly_name'' )}}'
-  - service: notify.mobile_app_tanya_oppo
-    data:
-      title: New Episode Added
-      message: '{{ state_attr( ''sensor.die_meester_plex_library_tv_shows'', ''last_added_item''
-        )}} was added to {{ state_attr( ''sensor.die_meester_plex_library_tv_shows'',
-        ''friendly_name'' )}}'
+    action: notify.html5
   mode: single
 - id: '1663704936553'
   alias: Turn Off NAS during Load Shedding
@@ -858,55 +818,45 @@
   - service: light.toggle
     data: {}
   mode: single
-- id: '1670174021966'
-  alias: Motion | Lounge
-  description: Lounge Motion Detection
-  use_blueprint:
-    path: homeassistant/motion_light.yaml
-    input:
-      motion_entity: binary_sensor.lumi_lumi_sensor_motion_aq2_iaszone_2
-      light_target:
-        entity_id:
-        - light.lounge
 - id: '1670222598477'
   alias: Motion | Foyer | Manual
   description: Manual Foyer
-  trigger:
-  - platform: state
-    entity_id:
-    - binary_sensor.lumi_lumi_sensor_motion_aq2_iaszone_2
-    from: 'off'
+  triggers:
+  - entity_id:
+    - binary_sensor.passage_pir_occupancy
     to: 'on'
-  condition:
-  - or:
+    trigger: state
+  conditions:
+  - condition: or
+    conditions:
     - condition: sun
       before: sunrise
       after: sunset
     - condition: numeric_state
-      entity_id: sensor.lumi_lumi_sensor_motion_aq2_illuminance_2
+      entity_id: sensor.passage_pir_illuminance
       below: 11
-  action:
-  - service: light.turn_on
-    data: {}
+  actions:
+  - data: {}
     target:
       entity_id:
       - light.lounge
+    action: light.turn_on
   - wait_for_trigger:
-    - platform: state
-      entity_id:
+    - entity_id:
       - binary_sensor.lumi_lumi_sensor_motion_aq2_iaszone_2
       from: 'on'
       to: 'off'
+      trigger: state
   - delay:
       hours: 0
       minutes: 5
       seconds: 0
       milliseconds: 0
-  - service: light.turn_off
-    data: {}
+  - data: {}
     target:
       entity_id:
       - light.lounge
+    action: light.turn_off
   mode: restart
 - id: '1672432928510'
   alias: Cycle Lights
@@ -918,21 +868,21 @@
 - id: '1675688633101'
   alias: Calendar Notification
   description: ''
-  trigger:
-  - platform: calendar
-    event: start
+  triggers:
+  - event: start
     offset: -0:10:0
     entity_id: calendar.family
-  condition: []
-  action:
-  - service: notify.persistent_notification
-    data:
+    trigger: calendar
+  conditions: []
+  actions:
+  - data:
       message: Event {{ trigger.calendar_event.summary }} @ {{ trigger.calendar_event.start
         }}
-  - service: notify.html_browser
-    data:
+    action: notify.persistent_notification
+  - data:
       message: Event {{ trigger.calendar_event.summary }} @ {{ trigger.calendar_event.start
         }}
+    action: notify.html5
   mode: single
 - id: '1683575802597'
   alias: Turn on Geyser After Load Shedding
@@ -1012,7 +962,7 @@
       end_chime_path: bells
       volume_level: 1
       announce: true
-  - service: notify.mobile_app_rudi_oppo
+  - service: notify.mobile_app_rudi_s24
     data:
       title: Gate Bell
       message: Someone is at the gate.
@@ -1066,10 +1016,12 @@
     path: SgtBatten/Stable.yaml
     input:
       camera: camera.swimmingpool
-      notify_device: 5de724ba17899d151837e1e7822fa464
+      notify_device: 74b3998c2198fea965280a80ed0dfa08
       critical: 'true'
       update_thumbnail: true
       color: indigo
+      presence_filter:
+      - ''
 - id: '1705224158608'
   alias: Update Schedule after Load Shedding
   description: Automation to update load schedule after load shedding ends.
@@ -1098,7 +1050,7 @@
     - input_button.pickup
   condition: []
   action:
-  - service: notify.mobile_app_rudi_oppo
+  - service: notify.mobile_app_rudi_s24
     metadata: {}
     data:
       title: Danika is Ready
@@ -1174,3 +1126,46 @@
     target:
       entity_id: light.gate
   mode: restart
+- id: '1738863288417'
+  alias: Foyer Light Sensor
+  description: ''
+  use_blueprint:
+    path: Blackshome/sensor-light.yaml
+    input:
+      motion_trigger:
+      - binary_sensor.passage_pir_motion
+      light_switch:
+        entity_id: light.foyer
+      include_ambient: ambient_enabled
+      ambient_light_sensor: sensor.passage_pir_illuminance
+      include_sun: sun_enabled
+- id: '1739013341546'
+  alias: Turn off Laundry Room after 15 mins
+  description: ''
+  triggers:
+  - type: turned_on
+    device_id: 7c00b8bb1ac4ee4f26636ce57b5143cb
+    entity_id: 368f45502be6d1c41667149f97c19145
+    domain: light
+    trigger: device
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  conditions:
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: sun.sun
+      state: below_horizon
+  actions:
+  - delay:
+      hours: 0
+      minutes: 10
+      seconds: 0
+      milliseconds: 0
+  - type: turn_off
+    device_id: 7c00b8bb1ac4ee4f26636ce57b5143cb
+    entity_id: 368f45502be6d1c41667149f97c19145
+    domain: light
+  mode: single

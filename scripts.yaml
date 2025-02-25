@@ -148,3 +148,29 @@ load_shedding_ending:
         sal ons almal ons eiers kan bak en krag kan eet.\"\n] %} {{ message | random
         }}"
   mode: single
+danika_pickup:
+  alias: Danika Pickup
+  use_blueprint:
+    path: homeassistant/confirmable_notification.yaml
+    input:
+      notify_device: 74b3998c2198fea965280a80ed0dfa08
+      title: Danika
+      message: Collect Danika
+      confirm_text: On my way
+      confirm_action:
+      - action: notify.mobile_app_danika_samsung
+        data:
+          message: TTS
+          data:
+            tts_text: Hi Danika, Your transport is on the way!
+            media_stream: alarm_stream_max
+      dismiss_text: Leaving Now
+      dismiss_action:
+      - action: notify.mobile_app_danika_samsung
+        data:
+          message: TTS
+          data:
+            tts_text: Hi Danika, Leaving now. See you shortly
+            media_stream: alarm_stream_max
+  description: Danika Pickup notification
+  icon: mdi:taxi

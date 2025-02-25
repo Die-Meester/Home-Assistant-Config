@@ -1,0 +1,8 @@
+panel_custom:
+  - name: zigbee2mqtt
+    sidebar_title: Zigbee2MQTT
+    sidebar_icon: mdi:zigbee
+    url_path: http://192.168.1.14:8800
+    config:
+      who: world
+      

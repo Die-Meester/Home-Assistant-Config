@@ -1,0 +1,7 @@
+platform: history_stats
+name: Danika Skool
+entity_id: device_tracker.danika_samsung  # Replace with your device tracker
+state: "Hoërskool Florida"  # Replace with your zone name
+type: time
+start: "{{ now().replace(day=1).replace(hour=0, minute=0, second=0) }}"
+end: "{{ now() }}"

@@ -1,7 +1,0 @@
-# Example configuration.yaml entry
-notify:
-  - platform: html5
-    name: html_browser
-    vapid_pub_key: !secret firebase_pub_key
-    vapid_prv_key: !secret firebase_prv_key
-    vapid_email: !secret firebase_valid_email

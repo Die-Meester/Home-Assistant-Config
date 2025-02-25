@@ -13,3 +13,4 @@ homeassistant:
   customize: !include customize.yaml
   packages: !include_dir_named integrations
   country: ZA
+

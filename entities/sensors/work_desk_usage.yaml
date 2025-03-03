@@ -1,0 +1,6 @@
+platform: integration
+source: sensor.work_desk_power
+unique_id: b072586c-5237-421b-bcca-e5c9ee558920
+name: Work Desk Usage
+unit_prefix: k
+round: 2

@@ -1,0 +1,6 @@
+platform: integration
+source: sensor.tumble_dryer_power
+unique_id: 7d369eca-9099-4e90-9199-f210b9f9901a
+name: Tumble Dryer Usage
+unit_prefix: k
+round: 2

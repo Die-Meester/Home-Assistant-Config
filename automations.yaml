@@ -295,7 +295,7 @@
       message: Load Shedding
       title: Load Shedding starts in {{     (state_attr("binary_sensor.kloofendal_loadshedding_esp",
         "startsin")) }} min
-    action: notify.mobile_app_tanya_oppo
+    action: notify.mobile_app_tanya_tablet
   - data:
       message: Load Shedding
       title: Load Shedding starts in {{     (state_attr("binary_sensor.kloofendal_loadshedding_esp",
@@ -309,6 +309,11 @@
       message: Load Shedding starts in {{ (state_attr("binary_sensor.kloofendal_loadshedding_esp",
         "startsin")) }} min
     action: notify.rudi_okelly_gmail_com
+  - data:
+      message: Load Shedding
+      title: Load Shedding starts in {{     (state_attr("binary_sensor.kloofendal_loadshedding_esp",
+        "startsin")) }} min
+    action: notify.mobile_app_tanya_x9c
   mode: single
 - id: '1657211274652'
   alias: Load Shedding (Ending)
@@ -623,7 +628,7 @@
       title: Load Shedding
       message: Load Shedding starts in {{     (state_attr("binary_sensor.kloofendal_loadshedding_esp",
         "startsin")) }} min
-    action: notify.mobile_app_tanya_oppo
+    action: notify.mobile_app_tanya_x9c
   - data:
       message: TTS
       data:
@@ -639,6 +644,28 @@
       message: Load Shedding starts in {{     (state_attr("binary_sensor.kloofendal_loadshedding_esp",
         "startsin")) }} min.
     action: notify.html5
+  - data:
+      message: TTS
+      data:
+        ttl: 0
+        priority: high
+        media_stream: alarm_stream
+        tts_text: Hey Tanya, Stop vacuuming. Final Warning Load Shedding starts in
+          {{    (state_attr("binary_sensor.kloofendal_loadshedding_esp", "startsin"))
+          }} min, start the generator.
+    enabled: true
+    action: notify.mobile_app_tanya_x9c
+  - data:
+      message: TTS
+      data:
+        ttl: 0
+        priority: high
+        media_stream: alarm_stream
+        tts_text: Hey Tanya, Stop vacuuming. Final Warning Load Shedding starts in
+          {{    (state_attr("binary_sensor.kloofendal_loadshedding_esp", "startsin"))
+          }} min, start the generator.
+    enabled: true
+    action: notify.mobile_app_tanya_tablet
   mode: single
 - id: '1663699813318'
   alias: Plex - New media added

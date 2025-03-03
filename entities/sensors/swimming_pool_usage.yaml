@@ -1,5 +1,6 @@
 platform: integration
 source: sensor.swimming_pool_energy_power
+unique_id: cfb51813-2d54-47b1-a1ca-c9972ac6adc1
 name: Swimming Pool Usage
 unit_prefix: k
 round: 2

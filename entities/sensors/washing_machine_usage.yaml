@@ -1,0 +1,6 @@
+platform: integration
+source: sensor.washing_machine_power
+unique_id: b32fc571-ce79-4d85-b202-ce4c96bb2081
+name: Washing Machine Usage
+unit_prefix: k
+round: 2

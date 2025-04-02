@@ -103,13 +103,13 @@ load_shedding_warning:
       - repeat:
           count: '{{ light_list | count }}'
           sequence:
-          - service: light.turn_on
-            target:
+          - target:
               entity_id: '{{ light_list[repeat.index - 1] }}'
+            action: light.turn_on
           - delay: '{{ delay_time }}'
-          - service: light.turn_off
-            target:
+          - target:
               entity_id: '{{ light_list[repeat.index - 1] }}'
+            action: light.turn_off
   mode: single
 load_shedding_ending:
   alias: Load Shedding Ending

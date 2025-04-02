@@ -49,6 +49,9 @@
           entity_id:
           - light.patio
           - light.backyard_2
+          - light.sonoff_m5_3g_bar_switch_03_relay_b
+          - light.kitchen_tx_ultimate_kitchen_tx_ultimate_l4
+          - light.sonoff_m5_3g_bar_switch_03_relay_a
         action: light.turn_on
       - data:
           title: Lights
@@ -63,6 +66,9 @@
           entity_id:
           - light.backyard_2
           - light.patio
+          - light.sonoff_m5_3g_bar_switch_03_relay_b
+          - light.kitchen_tx_ultimate_kitchen_tx_ultimate_l4
+          - light.sonoff_m5_3g_bar_switch_03_relay_a
         action: light.turn_off
       - data:
           message: Outside Lights were turned off.
@@ -529,19 +535,19 @@
 - id: '1660248879857'
   alias: 'Geyser: Turn on Geyser on Non-Workday'
   description: ''
-  trigger:
-  - platform: time
-    at: 08:00:00
-  condition:
+  triggers:
+  - at: 07:00:00
+    trigger: time
+  conditions:
   - condition: state
     entity_id: binary_sensor.workday_sensor
     state: 'off'
-  action:
-  - service: homeassistant.turn_on
-    data: {}
+  actions:
+  - data: {}
     target:
       entity_id:
       - switch.main_geyser
+    action: homeassistant.turn_on
   mode: single
 - id: '1660250439702'
   alias: Turn Geysers Off At Lights Out
@@ -791,46 +797,46 @@
 - id: '1664483467435'
   alias: Turn Down Lights when Watching TV
   description: ''
-  trigger:
-  - platform: state
-    entity_id:
-    - media_player.plex_plex_for_samsung_tv_2018
+  triggers:
+  - entity_id:
+    - media_player.skyworth_tv_97
     to: playing
     for:
       hours: 0
       minutes: 0
       seconds: 30
     id: Plex_Playing
-  - platform: state
-    entity_id:
-    - media_player.plex_plex_for_samsung_tv_2018
+    trigger: state
+  - entity_id:
+    - media_player.skyworth_tv_97
     from: playing
     id: plex_not_playing
     for:
       hours: 0
-      minutes: 1
-      seconds: 0
-  condition:
+      minutes: 0
+      seconds: 15
+    trigger: state
+  conditions:
   - condition: time
     after: '20:00:00'
-  action:
+  actions:
   - choose:
     - conditions:
       - condition: trigger
         id: Plex_Playing
       sequence:
-      - service: scene.turn_on
-        data: {}
+      - data: {}
         target:
           entity_id: scene.tv_night
+        action: scene.turn_on
     - conditions:
       - condition: trigger
         id: plex_not_playing
       sequence:
-      - service: scene.turn_on
-        data: {}
+      - data: {}
         target:
           entity_id: scene.bedroom_night
+        action: scene.turn_on
   mode: single
 - id: '1666634255034'
   alias: Danika Light Switch
@@ -845,46 +851,6 @@
   - service: light.toggle
     data: {}
   mode: single
-- id: '1670222598477'
-  alias: Motion | Foyer | Manual
-  description: Manual Foyer
-  triggers:
-  - entity_id:
-    - binary_sensor.passage_pir_occupancy
-    to: 'on'
-    trigger: state
-  conditions:
-  - condition: or
-    conditions:
-    - condition: sun
-      before: sunrise
-      after: sunset
-    - condition: numeric_state
-      entity_id: sensor.passage_pir_illuminance
-      below: 11
-  actions:
-  - data: {}
-    target:
-      entity_id:
-      - light.lounge
-    action: light.turn_on
-  - wait_for_trigger:
-    - entity_id:
-      - binary_sensor.lumi_lumi_sensor_motion_aq2_iaszone_2
-      from: 'on'
-      to: 'off'
-      trigger: state
-  - delay:
-      hours: 0
-      minutes: 5
-      seconds: 0
-      milliseconds: 0
-  - data: {}
-    target:
-      entity_id:
-      - light.lounge
-    action: light.turn_off
-  mode: restart
 - id: '1672432928510'
   alias: Cycle Lights
   description: ''
@@ -933,12 +899,12 @@
 - id: '1700752104412'
   alias: Control Swimming Pool Pump
   description: Run the pool pump for x number of hours a day.
-  trigger:
-  - platform: state
-    entity_id: binary_sensor.kloofendal_loadshedding_esp
-  - platform: time_pattern
-    minutes: /5
-  action:
+  triggers:
+  - entity_id: binary_sensor.kloofendal_loadshedding_esp
+    trigger: state
+  - minutes: /5
+    trigger: time_pattern
+  actions:
   - choose:
     - conditions:
       - condition: or
@@ -953,20 +919,24 @@
         value_template: '{{ states(''sensor.daily_pool_pump_runtime'') | float < states(''input_number.swimming_pool_pump_runtime'')
           | float }}'
       sequence:
-      - service: switch.turn_on
-        entity_id: switch.swimming_pool_swimming_pool
+      - action: switch.turn_on
+        data: {}
+        target:
+          entity_id: switch.swimming_pool_pump_swimming_pool_pump_relay
     - conditions:
       - condition: state
         entity_id: binary_sensor.kloofendal_loadshedding_esp
         state: 'on'
       sequence:
-      - service: switch.turn_off
-        entity_id: switch.swimming_pool_swimming_pool
+      - entity_id: switch.swimming_pool_pump_swimming_pool_pump_relay
+        action: switch.turn_off
   - condition: template
     value_template: '{{ states(''sensor.daily_pool_pump_runtime'') | float >= states(''input_number.swimming_pool_pump_runtime'')
       | float }}'
-  - service: switch.turn_off
-    entity_id: switch.swimming_pool_swimming_pool
+  - action: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.swimming_pool_pump_swimming_pool_pump_relay
 - id: '1703159316180'
   alias: Gate Bell Button
   description: ''
@@ -1086,38 +1056,39 @@
 - id: '1713032398745'
   alias: Turn on Driveway Light for Person
   description: ''
-  trigger:
-  - platform: state
-    entity_id:
+  triggers:
+  - entity_id:
     - binary_sensor.driveway_yard_person_occupancy
-    - binary_sensor.driveway_yard_car_occupancy
     - binary_sensor.front_garden_person_occupancy
-    - binary_sensor.front_garden_car_occupancy
     to: 'on'
     for:
       hours: 0
       minutes: 0
-      seconds: 0
-  condition:
+      seconds: 2
+    trigger: state
+  conditions:
   - condition: state
     entity_id: sun.sun
     state: below_horizon
-  action:
-  - service: light.turn_on
-    metadata: {}
+  - condition: state
+    entity_id: light.passage_tx_ultimate_passage_tx_ultimate_l4
+    state: 'off'
+  actions:
+  - metadata: {}
     data: {}
+    action: light.turn_on
     target:
-      entity_id: light.driveway
+      entity_id: light.passage_tx_ultimate_passage_tx_ultimate_l4
   - delay:
       hours: 0
       minutes: 5
       seconds: 0
       milliseconds: 0
-  - service: light.turn_off
-    metadata: {}
+  - metadata: {}
     data: {}
+    action: light.turn_off
     target:
-      entity_id: light.driveway
+      entity_id: light.passage_tx_ultimate_passage_tx_ultimate_l4
   mode: restart
 - id: '1713033726008'
   alias: Gate Motion
@@ -1160,12 +1131,13 @@
     path: Blackshome/sensor-light.yaml
     input:
       motion_trigger:
-      - binary_sensor.passage_pir_motion
+      - binary_sensor.foyer_pir_motion
       light_switch:
         entity_id: light.foyer
       include_ambient: ambient_enabled
-      ambient_light_sensor: sensor.passage_pir_illuminance
+      ambient_light_sensor: sensor.foyer_pir_illuminance
       include_sun: sun_enabled
+      ambient_light_options: ambient_light_option_enabled
 - id: '1739013341546'
   alias: Turn off Laundry Room after 15 mins
   description: ''
@@ -1196,3 +1168,150 @@
     entity_id: 368f45502be6d1c41667149f97c19145
     domain: light
   mode: single
+- id: '1741624248763'
+  alias: CityPower Notification when electricity is lost
+  description: This automation monitor the availability of the Municipal Power and
+    send an alert.
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.municipal_feed_status
+    to: 'off'
+  conditions: []
+  actions:
+  - action: notify.mobile_app_rudi_s24
+    data:
+      message: TTS
+      data:
+        tts_text: Municipal Power has been lost.
+        media_stream: alarm_stream_max
+  - action: notify.mobile_app_rudi_galaxy_watch7
+    metadata: {}
+    data:
+      message: Municipal Power has been lost
+      title: Power lost at home
+  mode: single
+- id: '1741624536537'
+  alias: CityPower Notify when power are restored
+  description: Sends a notification of when municipal power is restored.
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.municipal_feed_status
+    to: 'on'
+  conditions: []
+  actions:
+  - action: notify.mobile_app_rudi_s24
+    data:
+      message: TTS
+      data:
+        tts_text: Municipal Power has been restored.
+        media_stream: alarm_stream_max
+  - action: notify.mobile_app_rudi_galaxy_watch7
+    metadata: {}
+    data:
+      message: Municipal Power has been restored
+      title: Power restored at home
+  mode: single
+- id: '1742795242460'
+  alias: Washing Machine
+  description: ''
+  use_blueprint:
+    path: sbyx/notify-or-do-something-when-an-appliance-like-a-dishwasher-or-washing-machine-finishes.yaml
+    input:
+      power_sensor: sensor.washing_machine_power
+      actions:
+      - action: notify.mobile_app_rudi_s24
+        metadata: {}
+        data:
+          message: Washing Completed
+          title: Washing
+      pre_actions:
+      - action: notify.mobile_app_rudi_s24
+        metadata: {}
+        data:
+          message: Washing Started
+          title: Washing
+- id: '1742848424395'
+  alias: Passage Sensor Light
+  description: ''
+  use_blueprint:
+    path: Blackshome/sensor-light.yaml
+    input:
+      motion_trigger:
+      - binary_sensor.passage_top_pir
+      light_switch:
+        entity_id:
+        - light.passage_light_switch
+        - light.passage
+      include_sun: sun_enabled
+      ambient_light_options: ambient_light_option_enabled
+- id: '1742881850309'
+  alias: Low battery level detection & notification for all battery sensors
+  description: ''
+  use_blueprint:
+    path: sbyx/low-battery-level-detection-notification-for-all-battery-sensors.yaml
+    input:
+      actions:
+      - action: notify.rudi_okelly_gmail_com
+        metadata: {}
+        data:
+          title: Battery Needs Attention
+          message: '{{sensors}} needs replacement.'
+- id: '1742896294115'
+  alias: Toggle Lounge from Kitchen
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.kitchen_tx_ultimate_swipe_left
+    from: 'on'
+  conditions: []
+  actions:
+  - action: light.toggle
+    metadata: {}
+    data: {}
+    target:
+      entity_id: light.lounge
+  mode: single
+- id: '1742896441104'
+  alias: Toggle Dining Room light from Kitchen
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.kitchen_tx_ultimate_swipe_right
+    from: 'on'
+  conditions: []
+  actions:
+  - action: light.toggle
+    metadata: {}
+    data: {}
+    target:
+      entity_id: light.diningroom
+  mode: single
+- id: '1742924019465'
+  alias: Sensor Light - Guest Toilet
+  description: ''
+  use_blueprint:
+    path: Blackshome/sensor-light.yaml
+    input:
+      motion_trigger:
+      - binary_sensor.guest_toilet_pir
+      light_switch:
+        entity_id: light.guest_toilet
+      time_delay: 10
+      include_sun: sun_enabled
+- id: '1743109809537'
+  alias: Gate Camera - Frigate Notification
+  description: ''
+  use_blueprint:
+    path: SgtBatten/Stable.yaml
+    input:
+      presence_filter:
+      - person.rudi_o_kelly
+      camera:
+      - camera.gate_camera
+      notify_device: 74b3998c2198fea965280a80ed0dfa08
+      attachment: '{{base_url}}/api/frigate{{client_id}}/notifications/{{review_id}}/review_preview.gif'
+      zone_filter: false

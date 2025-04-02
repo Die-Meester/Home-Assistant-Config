@@ -1,0 +1,14 @@
+binary_sensor:
+  - name: "Municipal Feed Status"
+    unique_id: municipal_feed_status
+    state: >
+      {{ not is_state('switch.sonoff_100185df78', 'unavailable') }}
+    device_class: connectivity
+    icon: >
+      {% if is_state('binary_sensor.municipal_feed_status', 'on') %}
+        mdi:transmission-tower-import
+      {% else %}
+        mdi:transmission-tower-off
+      {% endif %}
+    delay_on: 0:00:10
+    delay_off: 0:00:10

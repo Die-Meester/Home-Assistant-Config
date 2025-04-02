@@ -1,6 +1,6 @@
 platform: history_stats
 name: Daily Pool Pump Runtime
-entity_id: switch.swimming_pool_swimming_pool
+entity_id: switch.swimming_pool_pump_swimming_pool_pump_relay
 state: 'on'
 type: time
 start: '{{ now().replace(hour=0, minute=0, second=0) }}'

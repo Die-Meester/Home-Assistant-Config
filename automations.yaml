@@ -114,25 +114,6 @@
     target:
       entity_id: cover.left_garage
   mode: single
-- id: '1650804055342'
-  alias: 'Garage Light: Turn Off after 15 Minutes'
-  description: ''
-  trigger:
-  - platform: state
-    entity_id:
-    - light.garage_light
-    to: 'on'
-    for:
-      hours: 0
-      minutes: 30
-      seconds: 0
-  condition: []
-  action:
-  - service: light.turn_off
-    data: {}
-    target:
-      entity_id: light.garage_light
-  mode: single
 - id: 22def37d-7d6e-48c4-937e-cc8b07c7dc3e
   alias: Toggle Bedroom Lights
   description: Toggle Bedroom Lights with 2 Ch Switch
@@ -295,7 +276,8 @@
   - data:
       volume_level: 0.7
     target:
-      entity_id: media_player.kitchen_speaker
+      entity_id:
+      - media_player.googlehome9884
     action: media_player.volume_set
   - data:
       message: Load Shedding
@@ -324,11 +306,11 @@
 - id: '1657211274652'
   alias: Load Shedding (Ending)
   description: ''
-  trigger:
-  - platform: template
-    value_template: '{{ timedelta(minutes=(state_attr("binary_sensor.kloofendal_loadshedding_esp",
+  triggers:
+  - value_template: '{{ timedelta(minutes=(state_attr("binary_sensor.kloofendal_loadshedding_esp",
       "endsin"))) == timedelta(minutes=30) }}'
-  condition:
+    trigger: template
+  conditions:
   - condition: and
     conditions:
     - condition: time
@@ -343,25 +325,24 @@
         entity_id: sensor.esp_status
         state: No Load Shedding
     enabled: true
-  action:
-  - service: notify.mobile_app_rudi_s24
-    data:
+  actions:
+  - data:
       message: Load shedding is currently stage {{ states( 'sensor.esp_status' ) }}.
         Load shedding in the West Rand will end soon, hopefully before {{ as_timestamp(state_attr('binary_sensor.kloofendal_loadshedding_esp',
         'ends')) | timestamp_custom("%H:%M", true) }}.
       title: Load Shedding
-  - service: media_player.volume_set
-    data:
+    action: notify.mobile_app_rudi_s24
+  - data:
       volume_level: 0.7
     target:
       entity_id: media_player.bedroom_speaker
-  - service: media_player.volume_set
-    data:
+    action: media_player.volume_set
+  - data:
       volume_level: 0.7
+    action: media_player.volume_set
     target:
-      entity_id: media_player.kitchen_speaker
-  - service: notify.mobile_app_rudi_s24
-    data:
+      entity_id: media_player.googlehome9884
+  - data:
       message: TTS
       data:
         ttl: 0
@@ -370,9 +351,10 @@
         tts_text: Load shedding will end soon, hopefully before {{ as_timestamp(state_attr('binary_sensor.kloofendal_loadshedding_esp',
           'ends')) | timestamp_custom("%I:%M %p", true) }}.
     enabled: false
-  - service: script.load_shedding_ending
-    metadata: {}
+    action: notify.mobile_app_rudi_s24
+  - metadata: {}
     data: {}
+    action: script.load_shedding_ending
   mode: single
 - id: '1657218088006'
   alias: Load Shedding (Stage)
@@ -621,7 +603,8 @@
   - data:
       volume_level: 0.7
     target:
-      entity_id: media_player.kitchen_speaker
+      entity_id:
+      - media_player.googlehome9884
     action: media_player.volume_set
   - data:
       message: This is the final load shedding warning.  In {{ state_attr( "binary_sensor.kloofendal_loadshedding_esp",
@@ -1246,6 +1229,9 @@
         - light.passage
       include_sun: sun_enabled
       ambient_light_options: ambient_light_option_enabled
+      include_time: time_enabled
+      after_time: '17:00:00'
+      before_time: '23:59:00'
 - id: '1742881850309'
   alias: Low battery level detection & notification for all battery sensors
   description: ''
@@ -1315,3 +1301,215 @@
       notify_device: 74b3998c2198fea965280a80ed0dfa08
       attachment: '{{base_url}}/api/frigate{{client_id}}/notifications/{{review_id}}/review_preview.gif'
       zone_filter: false
+- id: '1743861955467'
+  alias: Announce Formula 1 Event 5 Minutes Before
+  description: Announce when Formula 1 is about to start
+  triggers:
+  - value_template: '{{ (as_timestamp(states.calendar.formula_1.attributes.start_time)
+      - as_timestamp(now())) | int == 300 }}
+
+      '
+    trigger: template
+  conditions:
+  - condition: state
+    entity_id: binary_sensor.people_home
+    state: 'on'
+  actions:
+  - action: tts.google_cloud_say
+    data:
+      entity_id: media_player.bedroom_speaker
+      message: '"Reminder: The event {{ states.calendar.formula_1.attributes.message
+        }} starts in 5 minutes."
+
+        '
+- id: '1743871413389'
+  alias: Turn on Lights when Away
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.people_home
+    to: 'off'
+  conditions:
+  - condition: state
+    entity_id: sun.sun
+    state: below_horizon
+  actions:
+  - action: light.turn_on
+    metadata: {}
+    data: {}
+    target:
+      label_id: outsidelights
+      entity_id:
+      - light.bedroom
+      - light.bar_sonoff_m5_1g_bar_switch_01_relay_a
+      - light.kitchen_tx_ultimate_kitchen_tx_ultimate_l2
+  mode: single
+- id: '1744017559259'
+  alias: Handle Uptime Kuma Notifications
+  description: Trigger voice or app notification based on time and presence for Uptime
+    Kuma events
+  triggers:
+  - event_type: call_service
+    event_data:
+      domain: notify
+      service: mobile_app_rudi_s24
+    trigger: event
+  conditions:
+  - condition: template
+    value_template: '{{ trigger.event.data.service_data.title == "Uptime Kuma" }}
+
+      '
+  actions:
+  - choose:
+    - conditions:
+      - condition: and
+        conditions:
+        - condition: state
+          entity_id: person.rudi_o_kelly
+          state: home
+        - condition: time
+          after: 07:00:00
+          before: '20:00:00'
+          weekday:
+          - mon
+          - tue
+          - wed
+          - thu
+          - fri
+      sequence:
+      - action: chime_tts.say
+        target:
+          entity_id: media_player.bedroom_speaker
+        data:
+          volume_level: 0.65
+          announce: true
+          chime_path: bells
+          end_chime_path: bells_2
+          final_delay: 100
+          tts_platform: edge_tts
+          language: en-US
+          message: '{{ trigger.event.data.service_data.message }}'
+    - conditions: []
+      sequence:
+      - data:
+          title: '{{ trigger.event.data.service_data.title }}'
+          message: '{{ trigger.event.data.service_data.message }}'
+        action: notify.mobile_app_rudi_s24
+  mode: single
+- id: '1744062044882'
+  alias: Laundry Room Light
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - light.laundry_room_switch
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 3
+  conditions: []
+  actions:
+  - action: media_player.play_media
+    target:
+      entity_id: media_player.vlc_laundry_room
+    data:
+      media_content_id: media-source://media_source/local/sounds/ScaryGirl.mp3
+      media_content_type: music
+  mode: single
+- id: '1745411939915'
+  alias: 'Remote Bedroom Switch '
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.sonoff_rf_switch_3g_1
+    to: 'on'
+  conditions: []
+  actions:
+  - action: switch.toggle
+    metadata: {}
+    data: {}
+    target:
+      entity_id: switch.sonoff_1001551d73_2
+  mode: single
+- id: '1745695081077'
+  alias: Activate Low Light
+  description: The Second Button of the Remote activates Low Light
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.sonoff_rf_switch_3g_2
+    to: 'on'
+  conditions: []
+  actions:
+  - action: scene.turn_on
+    metadata: {}
+    data:
+      transition: 10
+    target:
+      entity_id: scene.tv_night
+  mode: single
+- id: '1745695199730'
+  alias: Night Light Mode
+  description: The Third Button of the Remote activates Night Light
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.sonoff_rf_switch_3g_3
+    to: 'on'
+  conditions: []
+  actions:
+  - action: scene.turn_on
+    metadata: {}
+    data:
+      transition: 10
+    target:
+      entity_id: scene.bedroom_night
+  mode: single
+- id: '1746113433702'
+  alias: New automation
+  description: Turn on Car Port Light when Car is Outside
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.driveway_yard_car_occupancy
+    to: 'on'
+    id: Car_Detected
+  - trigger: state
+    entity_id:
+    - binary_sensor.driveway_yard_car_occupancy
+    to: 'off'
+    id: Car_Not_Detected
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - Car_Detected
+      - condition: state
+        entity_id: sun.sun
+        state: below_horizon
+      sequence:
+      - action: light.turn_on
+        metadata: {}
+        data: {}
+        target:
+          entity_id: light.carport_carport_light
+    - conditions:
+      - condition: trigger
+        id:
+        - Car_Not_Detected
+      sequence:
+      - action: light.turn_off
+        metadata: {}
+        data: {}
+        target:
+          entity_id: light.carport_carport_light
+  mode: single

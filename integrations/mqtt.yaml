@@ -84,3 +84,19 @@ mqtt:
       state_topic: "home/remote_2_d"
       icon: mdi:remote
       off_delay: 2
+    - name: "Sonoff RF Switch 3G - 1"
+      icon: mdi:gesture-tap-button
+      off_delay: 2
+      unique_id: 01965d34-3438-702a-995e-e71388e862b8
+      state_topic: "home/sonoff_switch_3ch_1"
+    - name: "Sonoff RF Switch 3G - 2"
+      icon: mdi:gesture-tap-button
+      off_delay: 2
+      unique_id: 01965d35-ae92-74a6-80e6-4464f1ea05e5
+      state_topic: "home/sonoff_switch_3ch_2"
+    - name: "Sonoff RF Switch 3G - 3"
+      icon: mdi:gesture-tap-button
+      off_delay: 2
+      unique_id: 01965d35-db21-73dc-aa8e-114b5384a080
+      state_topic: "home/sonoff_switch_3ch_3"
+      

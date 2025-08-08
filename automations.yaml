@@ -948,15 +948,15 @@
       message: Someone is at the gate.
   mode: single
 - id: '1704390773222'
-  alias: Announce when service is down
+  alias: OpsGenie
   description: Announce when Service is down
-  trigger:
-  - platform: event
-    event_type: call_service
+  triggers:
+  - event_type: call_service
     event_data:
       domain: notify
       service: mobile_app_rudi_oppo
-  condition:
+    trigger: event
+  conditions:
   - condition: template
     value_template: '{{ trigger.event.data.service_data.data.status == 0 }}'
   - condition: time
@@ -976,9 +976,8 @@
       hours: 0
       minutes: 5
       seconds: 0
-  action:
-  - service: chime_tts.say
-    data:
+  actions:
+  - data:
       chime_path: bells
       end_chime_path: bells
       delay: 450
@@ -989,6 +988,13 @@
       message: '{{ trigger.event.data.service_data.data.name }} is down.'
     target:
       entity_id: media_player.bedroom_speaker
+    action: chime_tts.say
+    enabled: false
+  - action: notify.mobile_app_rudi_s24
+    metadata: {}
+    data:
+      message: '{{ trigger.event.data.service_data.data.name }}'
+      title: OpsGenie Alert
 - id: '1704569555680'
   alias: Camera Notification Swimming Pool
   description: ''
@@ -1389,6 +1395,16 @@
           tts_platform: edge_tts
           language: en-US
           message: '{{ trigger.event.data.service_data.message }}'
+        enabled: false
+      - data:
+          title: '{{ trigger.event.data.service_data.title }}'
+          message: '{{ trigger.event.data.service_data.message }}'
+        action: notify.mobile_app_rudi_s24
+      - action: notify.html5
+        metadata: {}
+        data:
+          message: '{{ trigger.event.data.service_data.message }}'
+          title: '{{ trigger.event.data.service_data.title }}'
     - conditions: []
       sequence:
       - data:

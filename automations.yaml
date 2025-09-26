@@ -1047,7 +1047,7 @@
   description: ''
   triggers:
   - entity_id:
-    - binary_sensor.driveway_yard_person_occupancy
+    - binary_sensor.driveway_yard_person_occupancy_2
     to: 'on'
     for:
       hours: 0
@@ -1081,36 +1081,36 @@
 - id: '1713033726008'
   alias: Gate Motion
   description: Turns on the Driveway light on Motion detected.
-  trigger:
-  - platform: state
-    entity_id:
-    - binary_sensor.driveway_street_all_occupancy
-    - binary_sensor.driveway_yard_all_occupancy
+  triggers:
+  - entity_id:
+    - binary_sensor.driveway_street_all_occupancy_2
+    - binary_sensor.driveway_yard_all_occupancy_2
     to: 'on'
     for:
       hours: 0
       minutes: 0
       seconds: 3
-  condition:
+    trigger: state
+  conditions:
   - condition: state
     entity_id: sun.sun
     state: below_horizon
-  action:
-  - service: light.turn_on
-    metadata: {}
+  actions:
+  - metadata: {}
     data: {}
     target:
       entity_id: light.gate
+    action: light.turn_on
   - delay:
       hours: 0
       minutes: 10
       seconds: 0
       milliseconds: 0
-  - service: light.turn_off
-    metadata: {}
+  - metadata: {}
     data: {}
     target:
       entity_id: light.gate
+    action: light.turn_off
   mode: restart
 - id: '1738863288417'
   alias: Foyer Light Sensor
@@ -1207,7 +1207,7 @@
   use_blueprint:
     path: sbyx/notify-or-do-something-when-an-appliance-like-a-dishwasher-or-washing-machine-finishes.yaml
     input:
-      power_sensor: sensor.washing_machine_power
+      power_sensor: sensor.tumble_dryer_power
       actions:
       - action: notify.mobile_app_rudi_s24
         metadata: {}
@@ -1489,12 +1489,12 @@
   triggers:
   - trigger: state
     entity_id:
-    - binary_sensor.driveway_yard_car_occupancy
+    - binary_sensor.driveway_yard_car_occupancy_2
     to: 'on'
     id: Car_Detected
   - trigger: state
     entity_id:
-    - binary_sensor.driveway_yard_car_occupancy
+    - binary_sensor.driveway_yard_car_occupancy_2
     to: 'off'
     id: Car_Not_Detected
     for:

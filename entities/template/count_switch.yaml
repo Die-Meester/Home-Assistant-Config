@@ -1,0 +1,5 @@
+sensor:
+  - default_entity_id: sensor.count_switch
+    name: Number of Switches
+    unique_id: 019af047-e9c1-77c9-817b-1fe2b094f708
+    state: '{{ states.switch | list | count }}'

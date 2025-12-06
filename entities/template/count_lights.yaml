@@ -1,0 +1,5 @@
+sensor:
+  - default_entity_id: sensor.count_lights
+    name: Number of Lights
+    unique_id: 019af044-d2fa-74df-9be4-e26044793b64
+    state: '{{ states.light | list | count }}'

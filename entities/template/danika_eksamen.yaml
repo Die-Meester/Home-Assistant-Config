@@ -1,0 +1,21 @@
+sensor:
+  - name: "Danika Eksamen Countdown"
+    state: >
+      {% set message = state_attr('calendar.family', 'message') %}
+      {% if message and 'Danika Eksamen' in message %}
+        {% set start = as_datetime(state_attr('calendar.family', 'start_time')).astimezone() %}
+        {% set current = now().astimezone() %}
+        {% set delta = start - now().astimezone() %}
+        {{ delta.days }} dae, {{ (delta.seconds // 3600) % 24 }} ure
+      {% else %}
+        No upcoming exam
+      {% endif %}
+    attributes:
+      title: >
+        {% set message = state_attr('calendar.family', 'message') %}
+        {% if message and 'Danika Eksamen' in message %}
+          {{ message.split(' - ')[1] }}
+        {% else %}
+          None
+        {% endif %}
+    icon: mdi:note-multiple

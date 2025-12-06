@@ -1,0 +1,8 @@
+sensor:
+  - unit_of_measurement: W
+    device_class: POWER
+    unique_id: 019af06b-1881-7321-bdd8-f5cc846fe10a
+    default_entity_id: sensor.power_current
+    name: Total Current Usage
+    state: '{{ states(''sensor.sonoff_10013bbb98_power'') | float(0) + states(''sensor.sonoff_10013218b0_power'')
+      | float(0) }}'

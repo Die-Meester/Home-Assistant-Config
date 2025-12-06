@@ -1,0 +1,6 @@
+sensor:
+  - default_entity_id: sensor.today_is
+    name: Today is
+    unique_id: 019af05c-0c85-74ac-8020-e11ee942f8ac
+    state: '{% set w = strptime(states(''sensor.date''), ''%Y-%m-%d'').strftime(''%w'')
+      | int %} {{[''Sunday'',''Monday'',''Tuesday'',''Wednesday'',''Thursday'',''Friday'',''Saturday''][w]}}'

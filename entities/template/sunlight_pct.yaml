@@ -1,0 +1,26 @@
+sensor:
+  - name: Sunlight Percent
+    unit_of_measurement: '%'
+    device_class: ILLUMINANCE
+    default_entity_id: sensor.sunlight_pct
+    state: >
+      {%- set elevation = state_attr('sun.sun', 'elevation') | float(0) %}
+      {%- set cloud_coverage = states('sensor.die_huis_cloud_cover') | float(0) %}
+
+      {# Calculate cloud factor based on coverage #}
+      {%- set cloud_factor = (1 - (0.75 * (cloud_coverage / 100) ** 3)) %}
+
+      {# Define elevation bounds #}
+      {%- set min_elevation = -6 %}
+      {%- set max_elevation = 90 %}
+
+      {# Adjust elevation within bounds #}
+      {%- set adjusted_elevation = elevation - min_elevation %}
+      {%- set adjusted_elevation = [adjusted_elevation, 0] | max %}
+      {%- set adjusted_elevation = [adjusted_elevation, max_elevation - min_elevation] | min %}
+      {%- set adjusted_elevation = adjusted_elevation / (max_elevation - min_elevation) * 100 %}
+
+      {# Calculate brightness based on elevation and cloud factor #}
+      {%- set brightness = adjusted_elevation * cloud_factor %}
+
+      {{ brightness | round }}

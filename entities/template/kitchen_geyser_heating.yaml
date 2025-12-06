@@ -1,0 +1,7 @@
+binary_sensor:
+  - device_class: HEAT
+    unique_id: 019af052-ffc8-71f2-95c2-e357bd710af0
+    default_entity_id: binary_sensor.kitchen_geyser_heating
+    name: Kitchen Geyser Heating
+    state: '{{ states(''sensor.outside_building_kitchen_geyser_power'')|float(0) >
+      0}}'

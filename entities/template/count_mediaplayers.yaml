@@ -1,0 +1,5 @@
+sensor:
+  - default_entity_id: sensor.count_media_player
+    name: Number of Media Players
+    unique_id: 019af046-01dc-75aa-9558-063a73ac257f
+    state: '{{ states.media_player | list | count }}'

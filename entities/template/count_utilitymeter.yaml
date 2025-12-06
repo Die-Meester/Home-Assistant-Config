@@ -1,0 +1,5 @@
+sensor:
+  - default_entity_id: sensor.count_utility_meter
+    name: Number of Utility meters
+    unique_id: 019af049-c061-72e8-9736-de213ecfce94
+    state: '{{ states.utility_meter | list | count }}'

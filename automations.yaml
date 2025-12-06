@@ -1173,7 +1173,7 @@
       data:
         tts_text: Municipal Power has been lost.
         media_stream: alarm_stream_max
-  - action: notify.mobile_app_rudi_galaxy_watch7
+  - action: notify.mobile_app_galaxy_watch7_3kcl
     metadata: {}
     data:
       message: Municipal Power has been lost
@@ -1195,7 +1195,7 @@
       data:
         tts_text: Municipal Power has been restored.
         media_stream: alarm_stream_max
-  - action: notify.mobile_app_rudi_galaxy_watch7
+  - action: notify.mobile_app_galaxy_watch7_3kcl
     metadata: {}
     data:
       message: Municipal Power has been restored

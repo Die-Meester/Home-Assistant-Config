@@ -6,3 +6,11 @@ notify:
   - platform: telegram
     name: DieMeesterHA
     chat_id: 1505925713
+
+  - platform: rest
+    name: WhatsAppRudi
+    resource: https://api.callmebot.com/whatsapp.php
+    data:
+      source: HA
+      phone: +27729070296   #enter your phone number here
+      apikey: 2634317        #enter your apikey here (see Setup above)

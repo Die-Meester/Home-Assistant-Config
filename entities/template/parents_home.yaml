@@ -1,0 +1,7 @@
+binary_sensor:
+  - unique_id: c2d22ff5-eede-4d79-bdcc-11dd5d90c47f
+    default_entity_id: binary_sensor.people_home
+    state: "{{ is_state('person.rudi_o_kelly', 'home')
+     or is_state('person.tanya_o_kelly','home')\
+     }}"
+    name: Parent Home

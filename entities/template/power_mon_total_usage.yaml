@@ -1,0 +1,8 @@
+sensor:
+  - unit_of_measurement: kWh
+    device_class: POWER
+    default_entity_id: sensor.power_mon_total_usage
+    name: Total Power Usage
+    unique_id: 019af066-89b1-71ba-bd96-931d3d3ab025
+    state: '{{ states(''sensor.bar_db_usage'') | float(0) + states(''sensor.main_db_usage'')
+      | float(0) }}'

@@ -1,0 +1,6 @@
+binary_sensor:
+  - default_entity_id: binary_sensor.dns_ok
+    name: Die Meester DNS OK
+    unique_id: 019af051-6103-7078-b815-e34178d65f6d
+    state: '{% if states(''sensor.external_ip'') == states(''sensor.external_ip'')
+      %}true{% else %}false{% endif %}'

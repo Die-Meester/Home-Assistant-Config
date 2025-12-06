@@ -1,0 +1,5 @@
+sensor:
+  - default_entity_id: sensor.count_entities
+    name: Number of Entities
+    unique_id: 019af04f-0d9f-7287-b3dd-c0d198ff98b6
+    state: '{{ states | length }}'

@@ -1,5 +1,0 @@
-platform: template
-sensors:
-  dns_ok:
-    friendly_name: "Die Meester DNS OK"
-    value_template: "{% if states('sensor.external_ip') == states('sensor.external_ip') %}true{% else %}false{% endif %}"

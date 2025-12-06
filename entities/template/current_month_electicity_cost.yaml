@@ -1,0 +1,10 @@
+sensor:
+  - unit_of_measurement: ZAR
+    default_entity_id: sensor.current_month_electricity_cost
+    name: Current Month Electricity Cost
+    unique_id: 019af04b-5f15-700a-845d-05f8e735587e
+    state: "{% set kws = states('sensor.total_monthly_energy') | float %} {% if kws
+      <= 350 %}\n  {% set cost = (kws * 1.8237) %}\n{% elif kws <= 500 %}\n  {% set
+      cost = (((kws - 350) * 2.0919) + (350 * 1.8237)) %}\n{% else %}\n  {% set cost
+      = (((kws - 500) * 2.3836) + (150 * 2.0919) + (350 * 1.8237)) %}\n{% endif %}
+      {% set cost = cost * 1.15 %} {{ \"{:.0f}\".format(cost) }}"

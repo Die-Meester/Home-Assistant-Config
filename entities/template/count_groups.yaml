@@ -1,0 +1,5 @@
+sensor:
+  - default_entity_id: sensor.count_groups
+    name: Number of Groups
+    unique_id: 019af042-b8e5-7213-b5b8-62038de6b7b2
+    state: '{{ states.group | list | count }}'

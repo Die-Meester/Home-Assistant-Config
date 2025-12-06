@@ -1,0 +1,12 @@
+sensor:
+  - unique_id: 1c9acc38-a2d9-45e1-b02f-3d6fc40c61db
+    unit_of_measurement: ZAR/kWh
+    default_entity_id: sensor.current_coj_rate
+    name: Current Electricity Rate
+    state: "{% if states('sensor.total_monthly_energy')|float <= 350 %}
+            2.097255
+            {%elif states('sensor.total_monthly_energy')|float <= 500 %}
+            2.405685
+            {% else %}
+            2.74114
+            {% endif %}"

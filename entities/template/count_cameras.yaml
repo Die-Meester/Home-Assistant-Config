@@ -1,0 +1,5 @@
+sensor:
+  - default_entity_id: sensor.count_camera
+    name: Number of online Cameras
+    unique_id: 019af06c-51fb-76c1-9aef-b6c4cb46c810
+    state: '{{ states.camera | list | count }}'

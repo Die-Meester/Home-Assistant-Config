@@ -1,6 +1,6 @@
 binary_sensor:
-  - device_class: HEAT
+  - name: "Main Geyser Heating"
     unique_id: 019af054-7292-7055-8a71-7ab3aa6fc4af
-    default_entity_id: binary_sensor.main_geyser_heating
-    name: Main Geyser Heating
-    state: '{{ states(''sensor.main_geyser_power_2'')|float > 0 }}'
+    device_class: heat
+    state: >
+      {{ states('sensor.main_geyser_power_2')|float(0) > 0 }}

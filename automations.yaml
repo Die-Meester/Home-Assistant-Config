@@ -89,7 +89,7 @@
   - target:
       entity_id:
       - switch.danika_laptop
-      - switch.kayden_pc_wired
+      - switch.unifi_block_94_de_80_4c_b3_06
     data: {}
     action: homeassistant.turn_off
   - data:
@@ -1527,4 +1527,110 @@
         data: {}
         target:
           entity_id: light.carport_carport_light
+  mode: single
+- id: '1768456394524'
+  alias: Birthday Reminder 05:30
+  description: ''
+  triggers:
+  - at: 05:30:00
+    trigger: time
+  conditions:
+  - condition: state
+    entity_id: calendar.birthdays
+    state: 'on'
+  actions:
+  - variables:
+      birthday_msg: '{{ state_attr(''calendar.birthdays'', ''message'') }}'
+  - data:
+      title: "\U0001F389 Today's Birthdays"
+      message: '{{ birthday_msg }}'
+    action: notify.mobile_app_rudi_s24
+  - data:
+      title: "\U0001F389 Today's Birthdays"
+      message: '{{ birthday_msg }}'
+    action: notify.mobile_app_galaxy_watch7_3kcl
+  mode: single
+- id: leave_for_school_waze_plus_10
+  alias: Leave for School - Just in Time (Waze + 10)
+  description: ''
+  triggers:
+  - minutes: /1
+    trigger: time_pattern
+  conditions:
+  - condition: state
+    entity_id: binary_sensor.workday_sensor
+    state: 'on'
+  - condition: template
+    value_template: '{# Read the Waze sensor as integer minutes, default 0 if bad
+      #} {% set travel = states(''sensor.travel_to_school'') | int(0) %} {# Construct
+      today''s 14:00 local time #} {% set two_pm = today_at(''14:00:00'') %} {# Subtract
+      travel + 10 minutes #} {% set target = two_pm - timedelta(minutes = travel +
+      10) %} {# Trigger once in the exact minute #} {{ now().strftime(''%Y-%m-%d %H:%M'')
+      == target.strftime(''%Y-%m-%d %H:%M'') }}
+
+      '
+  - condition: template
+    value_template: '{{ states(''sensor.travel_to_school'') | int(default=-1) >= 0
+      }}
+
+      '
+  actions:
+  - data:
+      message: TTS
+      data:
+        tts_text: Time to leave for school.
+        media_stream: alarm_stream_max
+    action: notify.mobile_app_rudi_s24
+  mode: single
+- id: '1768477802892'
+  alias: Leave for School - Just in Time (Waze + 10
+  description: ''
+  triggers:
+  - trigger: time_pattern
+    minutes: /1
+  conditions:
+  - condition: state
+    entity_id: binary_sensor.workday_sensor
+    state:
+    - 'on'
+  - condition: template
+    value_template: "      {# Read the Waze sensor as integer minutes, default 0 if
+      bad #}\n      {% set travel = states('sensor.travel_to_school') | int(0) %}\n
+      \     {# Construct today's 14:00 local time #}\n      {% set two_pm = today_at('14:00:00')
+      %}\n      {# Subtract travel + 10 minutes #}\n      {% set target = two_pm -
+      timedelta(minutes = travel + 10) %}\n      {# Trigger once in the exact minute
+      #}\n      {{ now().strftime('%Y-%m-%d %H:%M') == target.strftime('%Y-%m-%d %H:%M')
+      }}\n"
+  - condition: template
+    value_template: '{{ states(''sensor.travel_to_school'') | int(default=-1) >= 0
+      }}'
+  actions:
+  - action: notify.mobile_app_rudi_s24
+    metadata: {}
+    data:
+      data:
+        tts_text: Time to leave for school.
+        media_stream: alarm_stream_max
+  - action: tts.google_say
+    data:
+      cache: false
+      entity_id: media_player.bedroom_speaker
+      message: Time to pickup Kayden.
+  mode: single
+- id: '1770593050660'
+  alias: Turn Off All Lights
+  description: ''
+  triggers:
+  - trigger: tag
+    tag_id: 55fa64e3-37ea-484b-bb95-290fc3f1c573
+  conditions:
+  - condition: sun
+    after: sunrise
+    enabled: false
+  actions:
+  - action: light.toggle
+    metadata: {}
+    target:
+      entity_id: light.sonoff_1000fcb146
+    data: {}
   mode: single
